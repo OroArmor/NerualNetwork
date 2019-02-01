@@ -1,8 +1,8 @@
 package oroarmor.matrix;
 
-public class SigmoidMatrix extends MatrixFunction {
+public class TanhMatrix extends MatrixFunction {
 
-	public SigmoidMatrix() {
+	public TanhMatrix() {
 	}
 
 	public Matrix applyFunction(Matrix matrix) {
@@ -10,15 +10,15 @@ public class SigmoidMatrix extends MatrixFunction {
 
 		for (int i = 0; i < matrix.getRows(); i++) {
 			for (int j = 0; j < matrix.getCols(); j++) {
-				newMatrix.setValue(i, j, sigmoid(matrix.getValue(i, j)));
+				newMatrix.setValue(i, j, tanh(matrix.getValue(i, j)));
 			}
 		}
 
 		return newMatrix;
 	}
 
-	private double sigmoid(double value) {
-		return 1d / (1d + Math.pow(Math.E, -1d * value));
+	private double tanh(double value) {
+		return (Math.pow(Math.E, 2 * value) - 1) / (Math.pow(Math.E, 2 * value) + 1);
 	}
 
 	public Matrix getDerivative(Matrix matrix) {
@@ -26,15 +26,15 @@ public class SigmoidMatrix extends MatrixFunction {
 
 		for (int i = 0; i < matrix.getRows(); i++) {
 			for (int j = 0; j < matrix.getCols(); j++) {
-				newMatrix.setValue(i, j, dsigmoid(matrix.getValue(i, j)));
+				newMatrix.setValue(i, j, dtanh(matrix.getValue(i, j)));
 			}
 		}
 
 		return newMatrix;
 	}
 
-	private double dsigmoid(double value) {
-		return value * (1 - value);
+	private double dtanh(double value) {
+		return 1 - Math.pow(tanh(value), 2);
 	}
 
 }

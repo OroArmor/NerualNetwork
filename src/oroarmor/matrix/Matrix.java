@@ -147,6 +147,15 @@ public class Matrix implements Serializable {
 		return product;
 	}
 
+	//functions
+	public Matrix applyFunction(MatrixFunction function) {
+		return function.applyFunction(this);
+	}
+	
+	public Matrix getDerivative(MatrixFunction function) {
+		return function.getDerivative(this);
+	}
+	
 	// gets and sets
 	public int getRows() {
 		return rows;
@@ -174,5 +183,4 @@ public class Matrix implements Serializable {
 			System.out.println(" |");
 		}
 	}
-
 }
