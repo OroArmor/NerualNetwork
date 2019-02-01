@@ -61,6 +61,17 @@ public class Matrix implements Serializable {
 		return randomMatrix;
 	}
 
+	public Matrix transpose() {
+		Matrix transposed = new Matrix(this.getCols(), this.getRows());
+		for (int i = 0; i < this.getRows(); i++) {
+			for (int j = 0; j < this.getCols(); j++) {
+				transposed.setValue(j, i, this.getValue(i, j));
+			}
+		}
+		
+		return transposed;
+	}
+
 	// value operations
 	public Matrix multiply(double val) {
 		Matrix product = new Matrix(this.getRows(), this.getCols());
@@ -147,15 +158,15 @@ public class Matrix implements Serializable {
 		return product;
 	}
 
-	//functions
+	// functions
 	public Matrix applyFunction(MatrixFunction function) {
 		return function.applyFunction(this);
 	}
-	
+
 	public Matrix getDerivative(MatrixFunction function) {
 		return function.getDerivative(this);
 	}
-	
+
 	// gets and sets
 	public int getRows() {
 		return rows;

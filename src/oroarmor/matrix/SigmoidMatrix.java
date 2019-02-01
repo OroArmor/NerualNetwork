@@ -29,7 +29,7 @@ public class SigmoidMatrix extends MatrixFunction {
 				newMatrix.setValue(i, j, dsigmoid(matrix.getValue(i, j)));
 			}
 		}
-
+		newMatrix.print();
 		return newMatrix;
 	}
 
