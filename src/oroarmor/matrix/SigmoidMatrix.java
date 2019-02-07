@@ -17,7 +17,7 @@ public class SigmoidMatrix extends MatrixFunction {
 		return newMatrix;
 	}
 
-	private double sigmoid(double value) {
+	public double sigmoid(double value) {
 		return 1d / (1d + Math.pow(Math.E, -1d * value));
 	}
 
@@ -29,11 +29,10 @@ public class SigmoidMatrix extends MatrixFunction {
 				newMatrix.setValue(i, j, dsigmoid(matrix.getValue(i, j)));
 			}
 		}
-		newMatrix.print();
 		return newMatrix;
 	}
 
-	private double dsigmoid(double value) {
+	public double dsigmoid(double value) {
 		return value * (1 - value);
 	}
 

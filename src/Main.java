@@ -8,20 +8,28 @@ public class Main {
 	public static void main(String[] args) {
 
 		NeuralNetwork test = new NeuralNetwork(4);
-		test.addLayer(new FeedFowardLayer(1));
-		
-		double[][] inputs = {{1},{2},{3},{4}};
-		
-		test.feedFoward(new Matrix(inputs)).print();
-		
-		double[][] outputs = {{1}};
-		
-		test.train(new Matrix(inputs), new Matrix(outputs), new TotalError(0.1));
-		
-//		Matrix a = new Matrix(inputs);
-//		
-//		a.print();
-//		a.transpose().print();
-		
+		test.addLayer(new FeedFowardLayer(2));
+
+		double[][] input = { { 1 }, { 2 }, { 3 }, { 4 } };
+
+		double[][] outputs = { { 0.75 }, { 0.25 } };
+
+		Matrix inputs = new Matrix(input);
+
+		test.feedFoward(inputs).print();
+		int total = 10000000;
+
+		for (int i = 0; i < total; i++) {
+			if (i % (total / 10) == 0) {
+				test.feedFoward(inputs).print();
+
+				test.getLayer(0).getBias().print();
+			}
+
+			test.train(inputs, new Matrix(outputs), new TotalError(0.01));
+		}
+
+		test.feedFoward(inputs).print();
+
 	}
 }

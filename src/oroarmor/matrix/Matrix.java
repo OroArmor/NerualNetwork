@@ -68,8 +68,32 @@ public class Matrix implements Serializable {
 				transposed.setValue(j, i, this.getValue(i, j));
 			}
 		}
-		
+
 		return transposed;
+	}
+
+	public Matrix collapseRows() {
+		Matrix collapsed = new Matrix(this.getRows(), 1);
+
+		for (int i = 0; i < this.getRows(); i++) {
+			double rowSum = 0;
+			for (int j = 0; j < this.getCols(); j++) {
+				rowSum += this.getValue(i, j);
+			}
+			collapsed.setValue(i, 0, rowSum);
+		}
+
+		return collapsed;
+	}
+
+	public Matrix abs() {
+		Matrix abs = new Matrix(this.getRows(), 1);
+		for (int i = 0; i < this.getRows(); i++) {
+			for (int j = 0; j < this.getCols(); j++) {
+				abs.setValue(i, j, Math.abs(this.getValue(i, j)));
+			}
+		}
+		return abs;
 	}
 
 	// value operations
@@ -112,6 +136,11 @@ public class Matrix implements Serializable {
 
 	// matrix operations
 	public Matrix addMatrix(Matrix other) {
+
+		if (other.rows != this.rows || other.cols != this.cols) {
+			throw new IllegalArgumentException("Rows and Cols dont line up");
+		}
+
 		Matrix sum = new Matrix(this.getRows(), this.getCols());
 
 		for (int i = 0; i < this.getRows(); i++) {
@@ -193,5 +222,6 @@ public class Matrix implements Serializable {
 			}
 			System.out.println(" |");
 		}
+		System.out.println(" ");
 	}
 }

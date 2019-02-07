@@ -4,7 +4,7 @@ import java.util.Random;
 
 import oroarmor.matrix.Matrix;
 import oroarmor.matrix.MatrixFunction;
-import oroarmor.matrix.SigmoidFunction;
+import oroarmor.matrix.SigmoidMatrix;
 
 public class FeedFowardLayer extends Layer {
 
@@ -28,10 +28,7 @@ public class FeedFowardLayer extends Layer {
 	}
 
 	public Matrix feedFoward(Matrix inputs) {
-		Matrix output = weights.multiplyMatrix(inputs);
-		output.addMatrix(bias);
-		output.applyFunction(new SigmoidFunction());
-		
+		Matrix output = weights.multiplyMatrix(inputs).addMatrix(bias).applyFunction(new SigmoidMatrix());
 		return output;
 	}
 
@@ -61,12 +58,12 @@ public class FeedFowardLayer extends Layer {
 
 	@Override
 	public void setBias(Matrix newBias) {
-		bias= newBias;
+		bias = newBias;
 	}
 
 	@Override
 	public MatrixFunction getMatrixFunction() {
-		return new SigmoidFunction();
+		return new SigmoidMatrix();
 	}
 
 }
