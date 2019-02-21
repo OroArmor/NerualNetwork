@@ -42,28 +42,19 @@ public class FeedFowardLayer extends Layer {
 	}
 
 	@Override
-	public Matrix getWeights() {
-		return weights;
-	}
-
-	@Override
-	public void setWeights(Matrix newWeights) {
-		weights = newWeights;
-	}
-
-	@Override
-	public Matrix getBias() {
-		return bias;
-	}
-
-	@Override
-	public void setBias(Matrix newBias) {
-		bias = newBias;
-	}
-
-	@Override
 	public MatrixFunction getMatrixFunction() {
 		return new SigmoidMatrix();
+	}
+
+	@Override
+	public Matrix[] getParameters() {
+		return new Matrix[] {this.weights, this.bias};
+	}
+
+	@Override
+	public void setParameters(Matrix[] parameters) {
+		this.weights = parameters[0];
+		this.bias = parameters[1];
 	}
 
 }

@@ -18,14 +18,9 @@ public abstract class Layer implements Serializable {
 
 	public abstract int getOutputNeurons();
 
-	public abstract Matrix getWeights();
+	public abstract Matrix[] getParameters();
 
-	public abstract void setWeights(Matrix newWeights);
+	public abstract void setParameters(Matrix[] parameters);
 
-	public abstract Matrix getBias();
-
-	public abstract void setBias(Matrix newBias);
-	
 	public abstract MatrixFunction getMatrixFunction();
-
 }

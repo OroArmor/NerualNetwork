@@ -138,7 +138,8 @@ public class Matrix implements Serializable {
 	public Matrix addMatrix(Matrix other) {
 
 		if (other.rows != this.rows || other.cols != this.cols) {
-			throw new IllegalArgumentException("Rows and Cols dont line up");
+			throw new IllegalArgumentException("Cannot add a " + this.getRows() + "x" + this.getCols() + " and a "
+					+ other.getRows() + "x" + other.getCols() + " matrix together");
 		}
 
 		Matrix sum = new Matrix(this.getRows(), this.getCols());
@@ -167,7 +168,8 @@ public class Matrix implements Serializable {
 	public Matrix multiplyMatrix(Matrix other) {
 
 		if (this.getCols() != other.getRows()) {
-			throw new IllegalArgumentException("Rows and Columns dont line up");
+			throw new IllegalArgumentException("Cannot multiply a " + this.getRows() + "x" + this.getCols() + " and a "
+					+ other.getRows() + "x" + other.getCols() + " matrix together");
 		}
 
 		Matrix product = new Matrix(this.getRows(), other.getCols());
