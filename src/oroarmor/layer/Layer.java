@@ -23,4 +23,8 @@ public abstract class Layer implements Serializable {
 	public abstract void setParameters(Matrix[] parameters);
 
 	public abstract MatrixFunction getMatrixFunction();
+	
+	public abstract Matrix getWeights();
+
+	public abstract void setWeights(Matrix newWeights);
 }

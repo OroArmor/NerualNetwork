@@ -13,7 +13,6 @@ public class FeedFowardLayer extends Layer {
 	int neurons;
 	int previousNeurons;
 	Matrix weights;
-	Matrix bias;
 
 	public FeedFowardLayer(int neurons) {
 		this.neurons = neurons;
@@ -22,18 +21,14 @@ public class FeedFowardLayer extends Layer {
 	public void setup(int previousNeurons) {
 		this.previousNeurons = previousNeurons;
 
-		this.weights = Matrix.randomMatrix(neurons, previousNeurons, new Random(), -1, 1);
+		this.weights = Matrix.randomMatrix(previousNeurons+1, neurons, new Random(), -1, 1);
 
-		this.bias = Matrix.randomMatrix(neurons, 1, new Random(), -1, 1);
 	}
 
 	public Matrix feedFoward(Matrix inputs) {
-		Matrix output = weights.multiplyMatrix(inputs).addMatrix(bias).applyFunction(new SigmoidMatrix());
-		return output;
-	}
-
-	public void correctErrors(Matrix errors, double learningRate) {
-
+		Matrix output = inputs.clone().addOnetoEnd(); // clone the inputs and add one to the end for bias
+		output = output.multiplyMatrix(weights); // multiply by the weights and bias to get the unweighted output
+		return output.applyFunction(new SigmoidMatrix()); // apply sigmoid and return
 	}
 
 	@Override
@@ -48,13 +43,23 @@ public class FeedFowardLayer extends Layer {
 
 	@Override
 	public Matrix[] getParameters() {
-		return new Matrix[] {this.weights, this.bias};
+		return new Matrix[] { this.weights};
 	}
 
 	@Override
 	public void setParameters(Matrix[] parameters) {
 		this.weights = parameters[0];
-		this.bias = parameters[1];
+	}
+
+
+	@Override
+	public Matrix getWeights() {
+		return this.weights;
+	}
+
+	@Override
+	public void setWeights(Matrix newWeights) {
+		this.weights = newWeights;
 	}
 
 }

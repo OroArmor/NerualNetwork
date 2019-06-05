@@ -16,22 +16,29 @@ public class TotalError extends TrainingModel {
 
 	public void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expectedOutput) {
 
-		Matrix outputErrors = expectedOutput.subtractMatrix(layerOutputs[layerOutputs.length - 1]);
+//		Matrix outputErrors = expectedOutput.subtractMatrix(layerOutputs[layerOutputs.length - 1]).pow(2).divide(2);
+
+		Matrix[] deltas = new Matrix[layers.size()];
+
+		int layerIndex = deltas.length - 1;
+		Matrix currentOutput = layerOutputs[layerIndex];
+		deltas[layerIndex] = (currentOutput.subtractMatrix(expectedOutput))
+				.multiplyMatrix(((layers.get(layerIndex).getWeights().multiplyMatrix(currentOutput))
+						.applyFunction(layers.get(layerIndex).getMatrixFunction())).transpose());
+
+		deltas[layerIndex].print();
+
+		layerIndex--;
+
+		for (; layerIndex >= 0; layerIndex--) {
+			System.out.println(layerIndex);
+			deltas[layerIndex] = (layers.get(layerIndex+1).getWeights().transpose().multiplyMatrix(deltas[layerIndex+1]))
+					.multiplyMatrix(
+							
+							);
+		}
 
 		for (int i = layers.size() - 1; i >= 0; i--) {
-
-			Layer currentLayer = layers.get(i);
-
-			Matrix gradient = layerOutputs[i].getDerivative(currentLayer.getMatrixFunction());
-
-			gradient = gradient.multiplyMatrix(outputErrors.transpose());
-			gradient = gradient.multiply(trainingRate);
-
-			Matrix weightDelta = gradient.multiplyMatrix(currentLayer.getWeights());
-
-			currentLayer.setWeights(currentLayer.getWeights().addMatrix(weightDelta));
-
-			currentLayer.setBias(currentLayer.getBias().addMatrix(gradient.collapseRows().divide(2)));
 		}
 	}
 }

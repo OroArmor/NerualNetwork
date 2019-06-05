@@ -198,6 +198,20 @@ public class Matrix implements Serializable {
 		return function.getDerivative(this);
 	}
 
+	public Matrix addOnetoEnd() {
+		Matrix modified = new Matrix(this.getRows(), this.getCols()+1);
+		
+		for(int i = 0; i < modified.getRows(); i++) {
+			for(int j = 0; j < modified.getCols()-1; j++) {
+				modified.setValue(i, j, this.getValue(i, j));
+			}
+			modified.setValue(i, modified.getCols()-1, 1);
+		}
+		
+		return modified;
+	}
+	
+	
 	// gets and sets
 	public int getRows() {
 		return rows;
@@ -225,5 +239,27 @@ public class Matrix implements Serializable {
 			System.out.println(" |");
 		}
 		System.out.println(" ");
+	}
+
+	public Matrix clone() {
+		Matrix duplicate = new Matrix(this.getRows(), this.getCols());
+
+		for (int i = 0; i < this.getRows(); i++) {
+			for (int j = 0; j < this.getCols(); j++) {
+				duplicate.setValue(i, j, this.getValue(i, j));
+			}
+		}
+		return duplicate;
+	}
+
+	public Matrix pow(double power) {
+		Matrix duplicate = new Matrix(this.getRows(), this.getCols());
+
+		for (int i = 0; i < this.getRows(); i++) {
+			for (int j = 0; j < this.getCols(); j++) {
+				duplicate.setValue(i, j, Math.pow(this.getValue(i, j),power));
+			}
+		}
+		return duplicate;
 	}
 }
