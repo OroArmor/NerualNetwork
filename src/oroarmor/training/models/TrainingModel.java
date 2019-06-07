@@ -11,6 +11,6 @@ public abstract class TrainingModel {
 		// TODO Auto-generated constructor stub
 	}
 
-	public abstract void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expected);
+	public abstract void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expected, Matrix input);
 
 }

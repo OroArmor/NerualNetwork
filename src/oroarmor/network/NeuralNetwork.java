@@ -47,7 +47,7 @@ public class NeuralNetwork implements Serializable {
 			i++;
 		}
 		
-		model.fixErrors(layers, layerOutputs, output);
+		model.fixErrors(layers, layerOutputs, output, input);
 	}
 	
 	public Layer getLayer(int layerIndex) {

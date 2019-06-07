@@ -14,7 +14,7 @@ public class TotalError extends TrainingModel {
 		this.trainingRate = trainingRate;
 	}
 
-	public void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expectedOutput) {
+	public void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expectedOutput, Matrix inputs) {
 
 //		Matrix outputErrors = expectedOutput.subtractMatrix(layerOutputs[layerOutputs.length - 1]).pow(2).divide(2);
 
@@ -23,22 +23,30 @@ public class TotalError extends TrainingModel {
 		int layerIndex = deltas.length - 1;
 		Matrix currentOutput = layerOutputs[layerIndex];
 		deltas[layerIndex] = (currentOutput.subtractMatrix(expectedOutput))
-				.multiplyMatrix(((layers.get(layerIndex).getWeights().multiplyMatrix(currentOutput))
-						.applyFunction(layers.get(layerIndex).getMatrixFunction())).transpose());
-
-		deltas[layerIndex].print();
+				.hadamard((layerOutputs[layerIndex]
+						.getDerivative(layers.get(layerIndex).getMatrixFunction())));
 
 		layerIndex--;
 
 		for (; layerIndex >= 0; layerIndex--) {
-			System.out.println(layerIndex);
-			deltas[layerIndex] = (layers.get(layerIndex+1).getWeights().transpose().multiplyMatrix(deltas[layerIndex+1]))
-					.multiplyMatrix(
-							
-							);
+			deltas[layerIndex] = (// ---UPPER LAYER---
+			layers.get(layerIndex + 1).getWeights().transpose().multiplyMatrix(// get the weights from i+1 and transpose
+																				// them.
+					deltas[layerIndex + 1] // multiply those transposed weights with the deltas from the next layer
+			)).hadamard( // get the hadamard product of UPPER LAYER and CURRENT LAYER
+					// ---CURRENT LAYER---
+					(layerOutputs[layerIndex]).getDerivative(layers.get(layerIndex).getMatrixFunction()))// get the anti-derivative of the
+																				// current weights and past output
+			;
 		}
 
-		for (int i = layers.size() - 1; i >= 0; i--) {
+		for (int i = 0; i < layers.size(); i++) {
+			Matrix delEoverDelWeight = deltas[i]
+					.multiplyMatrix((i > 0) ? layerOutputs[i - 1].transpose() : inputs.transpose());
+			Layer currentLayer = layers.get(i);
+			currentLayer.setWeights(currentLayer.getWeights()
+					.subtractMatrix(delEoverDelWeight.multiply(trainingRate)
+					));
 		}
 	}
 }

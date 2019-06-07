@@ -199,19 +199,18 @@ public class Matrix implements Serializable {
 	}
 
 	public Matrix addOnetoEnd() {
-		Matrix modified = new Matrix(this.getRows(), this.getCols()+1);
-		
-		for(int i = 0; i < modified.getRows(); i++) {
-			for(int j = 0; j < modified.getCols()-1; j++) {
+		Matrix modified = new Matrix(this.getRows() + 1, this.getCols());
+
+		for (int j = 0; j < modified.getCols(); j++) {
+			for (int i = 0; i < modified.getRows() - 1; i++) {
 				modified.setValue(i, j, this.getValue(i, j));
 			}
-			modified.setValue(i, modified.getCols()-1, 1);
+			modified.setValue(modified.getRows() - 1, j, 1);
 		}
-		
+
 		return modified;
 	}
-	
-	
+
 	// gets and sets
 	public int getRows() {
 		return rows;
@@ -230,7 +229,7 @@ public class Matrix implements Serializable {
 	}
 
 	// prints
-	public void print() {
+	public Matrix print() {
 		for (int i = 0; i < this.getRows(); i++) {
 			System.out.print("| ");
 			for (int j = 0; j < this.getCols(); j++) {
@@ -239,6 +238,7 @@ public class Matrix implements Serializable {
 			System.out.println(" |");
 		}
 		System.out.println(" ");
+		return this;
 	}
 
 	public Matrix clone() {
@@ -257,9 +257,24 @@ public class Matrix implements Serializable {
 
 		for (int i = 0; i < this.getRows(); i++) {
 			for (int j = 0; j < this.getCols(); j++) {
-				duplicate.setValue(i, j, Math.pow(this.getValue(i, j),power));
+				duplicate.setValue(i, j, Math.pow(this.getValue(i, j), power));
 			}
 		}
 		return duplicate;
+	}
+
+	public Matrix hadamard(Matrix other) {
+		if (this.getRows() != other.getRows() || this.getCols() != other.getCols()) {
+			throw new IllegalArgumentException("Cannot multiply a " + this.getRows() + "x" + this.getCols() + " and a "
+					+ other.getRows() + "x" + other.getCols() + " matrix together");
+		}
+		Matrix product = new Matrix(this.getRows(), this.getCols());
+		for (int i = 0; i < this.getRows(); i++) {
+			for (int j = 0; j < this.getCols(); j++) {
+				product.setValue(i, j, this.getValue(i, j) * other.getValue(i, j));
+			}
+		}
+
+		return product;
 	}
 }
