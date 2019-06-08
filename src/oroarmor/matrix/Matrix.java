@@ -277,4 +277,8 @@ public class Matrix implements Serializable {
 
 		return product;
 	}
+	
+	public double[][] getValues(){
+		return matrix;
+	}
 }
