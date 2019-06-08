@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="lib/" kind="src" path="src"/>
+	<classpathentry kind="src" path="src/lib">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/s-oronae/OneDrive - Bellevue School District/My Library.jar"/>
-	<classpathentry kind="lib" path="C:/Users/s-oronae/OneDrive - Bellevue School District/eclipse-workspace/Fog Effect/core.jar"/>
+	<classpathentry kind="lib" path="src/lib/core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
