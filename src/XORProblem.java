@@ -1,5 +1,4 @@
 import oroarmor.layer.FeedFowardLayer;
-import oroarmor.layer.KeepPositiveLayer;
 import oroarmor.matrix.Matrix;
 import oroarmor.network.NeuralNetwork;
 import oroarmor.training.models.TotalError;
@@ -7,52 +6,44 @@ import processing.core.PApplet;
 
 public class XORProblem extends PApplet {
 
-	//NOT COMPLETE.
-	
-	
-	NeuralNetwork xornn = new NeuralNetwork(4);
 
-	Matrix[] inputs;
-	Matrix[] outputs;
+	NeuralNetwork xornn = new NeuralNetwork(2);
+
+	double[][] input1 = { { 1 }, { 1 } };
+	double[][] input2 = { { 0 }, { 1 } };
+	double[][] input3 = { { 1 }, { 0 } };
+	double[][] input4 = { { 0 }, { 0 } };
+
+	double[][] output1 = { { 0 } };
+	double[][] output2 = { { 1 } };
+	double[][] output3 = { { 1 } };
+	double[][] output4 = { { 0 } };
+
+	Matrix inputs1 = new Matrix(input1);
+	Matrix inputs2 = new Matrix(input2);
+	Matrix inputs3 = new Matrix(input3);
+	Matrix inputs4 = new Matrix(input4);
+
+	double[][] output = { { 0 } };
+	Matrix[] inputs = { inputs1, inputs2, inputs3, inputs4 };
+
+	Matrix outputs1 = new Matrix(output1);
+	Matrix outputs2 = new Matrix(output2);
+	Matrix outputs3 = new Matrix(output3);
+	Matrix outputs4 = new Matrix(output4);
+
+	Matrix[] outputs = { outputs1, outputs2, outputs3, outputs4 };
 
 	int trains = 0;
-	
+
 	public static void main(String[] args) {
 		PApplet.main("XORProblem");
 	}
 
 	public void setup() {
-		// righttop, lefttop, rightbottom, leftbottom
-		double[][][] ins = { { { 0 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 1 }, { 1 }, { 1 } },
-
-				{ { 1 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 1 }, { 1 }, { 0 } },
-
-				{ { 0 }, { 1 }, { 0 }, { 1 } }, { { 1 }, { 0 }, { 1 }, { 0 } },
-
-				{ { 0 }, { 0 }, { 1 }, { 1 } }, { { 1 }, { 1 }, { 0 }, { 0 } } };
-
-		double[][][] sols = { { { 1 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 0 }, { 0 }, { 0 } },
-				{ { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 0 }, { 1 }, { 0 } },
-				{ { 0 }, { 0 }, { 1 }, { 0 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, };
-		inputs = new Matrix[8];
-		outputs = new Matrix[8];
-		for (int i = 0; i < sols.length; i++) {
-			inputs[i] = new Matrix(ins[i]);
-			outputs[i] = new Matrix(sols[i]);
-		}
-
 		xornn.addLayer(new FeedFowardLayer(4));
-		xornn.addLayer(new FeedFowardLayer(4));
-		xornn.addLayer(new KeepPositiveLayer(8));
-		xornn.addLayer(new FeedFowardLayer(4));
-
-		System.out.println("Feed Foward");
-		int i = 0;
-		for (Matrix input : inputs) {
-			xornn.feedFoward(input);
-		}
-//		noStroke();
-		textAlign(CENTER, CENTER);
+		xornn.addLayer(new FeedFowardLayer(1));
+		noStroke();
 	}
 
 	public void settings() {
@@ -67,88 +58,14 @@ public class XORProblem extends PApplet {
 				trains++;
 			}
 		}
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 2; j++) {
-				drawInputs(inputs[i + j * 4], i * width / 4, j * height / 2, width / 4, height / 2, i + j * 4);
+		float res = 100;
+		for (int i = 0; i < width; i += width / res) {
+			for (int j = 0; j < height; j += height / res) {
+				double[][] currentInput = { { (double) i / width }, { (double) j / height } };
+				double output = xornn.feedFoward(new Matrix(currentInput)).getValue(0, 0);				
+				fill((float)output*255);
+				rect(i,j,width/res, height/res);
 			}
 		}
-		fill(0);
-		text(trains, 200, 380);
-//		noLoop();
-	}
-
-	void drawInputs(Matrix inputs, float x, float y, float w, float h, int oIndex) {
-
-		Matrix outputs = xornn.feedFoward(inputs);
-		pushMatrix();
-		translate(x + w / 2f, y + h / 4f);
-		scale(0.8f);
-
-		double[][] output = outputs.getValues();
-
-		int index = 0;
-		double max = Double.MIN_VALUE;
-
-		for (int i = 0; i < output.length; i++) {
-			for (int j = 0; j < output[i].length; j++) {
-				if (output[i][j] > max) {
-					index = i;
-					max = output[i][j];
-				}
-			}
-		}
-
-		String what = "error";
-
-		switch (index) {
-		case 0:
-			what = "solid";
-			break;
-		case 1:
-			what = "diagonal";
-			break;
-		case 2:
-			what = "horizontal";
-			break;
-		case 3:
-			what = "vertical";
-			break;
-		default:
-			println(index);
-		}
-
-		String actual = "";
-
-		if (oIndex > 5) {
-			actual = "vertical";
-		} else if (oIndex > 3) {
-			actual = "horizontal";			
-		} else if (oIndex > 1) {
-			actual = "diagonal";
-		} else {
-			actual = "solid";
-		}
-		fill(255,0,0);
-		if (actual.equals(what)) {
-			fill(0, 255, 0);
-		}
-
-		rect(0 - (w / 2f), 0 - (h / 4f), w, h);
-		fill(0);
-		textSize(20);
-		text(what, 0, h / 2f);
-
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 2; j++) {
-				fill((float) inputs.getValue(i * 2 + j, 0) * 255f);
-
-				rect((i - 1) * w / 2f, (j - 1) * h / 4f, w / 2f, h / 4f);
-
-				fill(255, 0, 0);
-				text(i * 2 + j, (i - 1) * w / 2f + w / 4f, (j - 1) * h / 4f + h / 8f);
-			}
-		}
-
-		popMatrix();
 	}
 }

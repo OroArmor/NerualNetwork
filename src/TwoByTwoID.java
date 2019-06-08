@@ -44,7 +44,6 @@ public class TwoByTwoID extends PApplet {
 		twobytwonn.addLayer(new FeedFowardLayer(4));
 
 		System.out.println("Feed Foward");
-		int i = 0;
 		for (Matrix input : inputs) {
 			twobytwonn.feedFoward(input);
 		}
