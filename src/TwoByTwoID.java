@@ -1,24 +1,30 @@
 import oroarmor.layer.FeedFowardLayer;
 import oroarmor.layer.KeepPositiveLayer;
 import oroarmor.matrix.Matrix;
+import oroarmor.network.NetworkSaver;
 import oroarmor.network.NeuralNetwork;
 import oroarmor.training.models.TotalError;
+import oroarmor.util.DisposeHandler;
 import processing.core.PApplet;
 
 public class TwoByTwoID extends PApplet {
 
-	NeuralNetwork twobytwonn = new NeuralNetwork(4);
+	DisposeHandler dh;
+
+	NeuralNetwork twobytwonn;
 
 	Matrix[] inputs;
 	Matrix[] outputs;
 
-	int trains = 0;
-	
+	boolean reset = false;
+
 	public static void main(String[] args) {
 		PApplet.main("TwoByTwoID");
 	}
 
 	public void setup() {
+		
+		
 		// righttop, lefttop, rightbottom, leftbottom
 		double[][][] ins = { { { 0 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 1 }, { 1 }, { 1 } },
 
@@ -38,17 +44,33 @@ public class TwoByTwoID extends PApplet {
 			outputs[i] = new Matrix(sols[i]);
 		}
 
-		twobytwonn.addLayer(new FeedFowardLayer(4));
-		twobytwonn.addLayer(new FeedFowardLayer(4));
-		twobytwonn.addLayer(new KeepPositiveLayer(8));
-		twobytwonn.addLayer(new FeedFowardLayer(4));
+		twobytwonn = NetworkSaver.loadNetworkFromFile(System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/",
+				"twoXtwonn.nn");
 
+		if (twobytwonn == null || reset) {
+			twobytwonn = new NeuralNetwork(4);
+			twobytwonn.addLayer(new FeedFowardLayer(4));
+			twobytwonn.addLayer(new FeedFowardLayer(4));
+			twobytwonn.addLayer(new KeepPositiveLayer(8));
+			twobytwonn.addLayer(new FeedFowardLayer(4));
+		}
 		System.out.println("Feed Foward");
 		for (Matrix input : inputs) {
 			twobytwonn.feedFoward(input);
 		}
 //		noStroke();
 		textAlign(CENTER, CENTER);
+
+		dh = new DisposeHandler() {
+			@Override
+			public void dispose() {
+				NetworkSaver.saveNetworkToFile(twobytwonn, "twoXtwonn.nn",
+						System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/");
+				System.out.println("Network Saved");
+			}
+		};
+//		registerMethod("dispose", dh);
+//		dh.register(this);
 	}
 
 	public void settings() {
@@ -60,7 +82,6 @@ public class TwoByTwoID extends PApplet {
 		for (int i = 0; i < 1000; i++) {
 			for (int j = 0; j < inputs.length; j++) {
 				twobytwonn.train(inputs[j], outputs[j], new TotalError(0.01));
-				trains++;
 			}
 		}
 		for (int i = 0; i < 4; i++) {
@@ -69,7 +90,7 @@ public class TwoByTwoID extends PApplet {
 			}
 		}
 		fill(0);
-		text(trains, 200, 380);
+		text(twobytwonn.getTrainingAttemps(), 200, 380);
 //		noLoop();
 	}
 
@@ -118,13 +139,13 @@ public class TwoByTwoID extends PApplet {
 		if (oIndex > 5) {
 			actual = "vertical";
 		} else if (oIndex > 3) {
-			actual = "horizontal";			
+			actual = "horizontal";
 		} else if (oIndex > 1) {
 			actual = "diagonal";
 		} else {
 			actual = "solid";
 		}
-		fill(255,0,0);
+		fill(255, 0, 0);
 		if (actual.equals(what)) {
 			fill(0, 255, 0);
 		}
@@ -147,4 +168,5 @@ public class TwoByTwoID extends PApplet {
 
 		popMatrix();
 	}
+
 }

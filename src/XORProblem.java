@@ -1,5 +1,6 @@
 import oroarmor.layer.FeedFowardLayer;
 import oroarmor.matrix.Matrix;
+import oroarmor.network.NetworkSaver;
 import oroarmor.network.NeuralNetwork;
 import oroarmor.training.models.TotalError;
 import processing.core.PApplet;
@@ -34,7 +35,7 @@ public class XORProblem extends PApplet {
 
 	Matrix[] outputs = { outputs1, outputs2, outputs3, outputs4 };
 
-	int trains = 0;
+	int trains = 0;	
 
 	public static void main(String[] args) {
 		PApplet.main("XORProblem");
@@ -58,6 +59,8 @@ public class XORProblem extends PApplet {
 				trains++;
 			}
 		}
+		
+		
 		float res = 100;
 		for (int i = 0; i < width; i += width / res) {
 			for (int j = 0; j < height; j += height / res) {

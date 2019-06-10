@@ -12,6 +12,7 @@ public class NeuralNetwork implements Serializable {
 
 	ArrayList<Layer> layers;
 	int inputs;
+	int trains;
 
 	public NeuralNetwork(int inputNeurons) {
 		inputs = inputNeurons;
@@ -35,7 +36,7 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	public void train(Matrix input, Matrix output, TrainingModel model) {
-
+		trains++;
 		Matrix[] layerOutputs = new Matrix[layers.size()];
 		int i = 0;
 		for (Layer layer : layers) {
@@ -54,4 +55,7 @@ public class NeuralNetwork implements Serializable {
 		return layers.get(layerIndex);
 	}
 
+	public int getTrainingAttemps() {
+		return this.trains;
+	}
 }
