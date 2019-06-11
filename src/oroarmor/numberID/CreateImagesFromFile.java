@@ -18,15 +18,18 @@ public class CreateImagesFromFile extends PApplet {
 	}
 
 	public void setup() {
-//		surface.setVisible(false);
+		surface.setVisible(false);
 		loadImagesFromFile(System.getProperty("user.dir") + "/src/data/numberID/train/",
-				"train-images-idx3-ubyte-uncompressed");
+				"train-images-idx3-ubyte-uncompressed", "C:\\oroarmor\\numberID\\train\\", 60000);
+		System.out.println("Training done, switching to test");
+		loadImagesFromFile(System.getProperty("user.dir") + "/src/data/numberID/test/",
+				"t10k-images-idx3-ubyte-uncompressed", "C:\\oroarmor\\numberID\\test\\", 10000);
 	}
 
-	public void loadImagesFromFile(String filePath, String fileName) {
+	public void loadImagesFromFile(String filePath, String fileName, String savePath, int imageAmount) {
 		FileInputStream fos = null;
 		File imageFile = new File(filePath + fileName);
-		byte[] imageByte = new byte[60000 * 28 * 28 + 16];
+		byte[] imageByte = new byte[imageAmount * 28 * 28 + 16];
 
 		try {
 			fos = new FileInputStream(imageFile);
@@ -40,7 +43,7 @@ public class CreateImagesFromFile extends PApplet {
 			System.out.println(e.getLocalizedMessage());
 		}
 
-		for (int i = 0; i < 60000; i++) {
+		for (int i = 0; i < imageAmount; i++) {
 			int[] pixels = new int[28 * 28];
 
 			for (int j = 0; j < pixels.length; j++) {
@@ -55,7 +58,7 @@ public class CreateImagesFromFile extends PApplet {
 
 //			testI.resize(280, 280);
 
-			testI.save(filePath+"trainingImages/" + i + ".png");
+			testI.save(savePath+"images/" + i + ".png");
 			if(i%100 == 0)
 				System.out.println((float)i/600f);
 		}
