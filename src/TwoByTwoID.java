@@ -1,82 +1,27 @@
-import oroarmor.layer.FeedFowardLayer;
-import oroarmor.layer.KeepPositiveLayer;
-import oroarmor.matrix.Matrix;
-import oroarmor.network.NetworkSaver;
-import oroarmor.network.NeuralNetwork;
-import oroarmor.training.models.TotalError;
-import oroarmor.util.DisposeHandler;
+import oroarmor.neuralnetwork.layer.FeedFowardLayer;
+import oroarmor.neuralnetwork.layer.KeepPositiveLayer;
+import oroarmor.neuralnetwork.matrix.Matrix;
+import oroarmor.neuralnetwork.network.NetworkSaver;
+import oroarmor.neuralnetwork.network.NeuralNetwork;
+import oroarmor.neuralnetwork.training.models.TotalError;
 import processing.core.PApplet;
 
 public class TwoByTwoID extends PApplet {
-
-	DisposeHandler dh;
-
-	NeuralNetwork twobytwonn;
-
-	Matrix[] inputs;
-	Matrix[] outputs;
-
-	boolean reset = false;
 
 	public static void main(String[] args) {
 		PApplet.main("TwoByTwoID");
 	}
 
-	public void setup() {
-		
-		
-		// righttop, lefttop, rightbottom, leftbottom
-		double[][][] ins = { { { 0 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 1 }, { 1 }, { 1 } },
+	DisposeHandler dh;
 
-				{ { 1 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 1 }, { 1 }, { 0 } },
+	NeuralNetwork twobytwonn;
+	Matrix[] inputs;
 
-				{ { 0 }, { 1 }, { 0 }, { 1 } }, { { 1 }, { 0 }, { 1 }, { 0 } },
+	Matrix[] outputs;
 
-				{ { 0 }, { 0 }, { 1 }, { 1 } }, { { 1 }, { 1 }, { 0 }, { 0 } } };
+	boolean reset = false;
 
-		double[][][] sols = { { { 1 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 0 }, { 0 }, { 0 } },
-				{ { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 0 }, { 1 }, { 0 } },
-				{ { 0 }, { 0 }, { 1 }, { 0 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, };
-		inputs = new Matrix[8];
-		outputs = new Matrix[8];
-		for (int i = 0; i < sols.length; i++) {
-			inputs[i] = new Matrix(ins[i]);
-			outputs[i] = new Matrix(sols[i]);
-		}
-
-		twobytwonn = NetworkSaver.loadNetworkFromFile(System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/",
-				"twoXtwonn.nn");
-
-		if (twobytwonn == null || reset) {
-			twobytwonn = new NeuralNetwork(4);
-			twobytwonn.addLayer(new FeedFowardLayer(4));
-			twobytwonn.addLayer(new FeedFowardLayer(4));
-			twobytwonn.addLayer(new KeepPositiveLayer(8));
-			twobytwonn.addLayer(new FeedFowardLayer(4));
-		}
-		System.out.println("Feed Foward");
-		for (Matrix input : inputs) {
-			twobytwonn.feedFoward(input);
-		}
-//		noStroke();
-		textAlign(CENTER, CENTER);
-
-		dh = new DisposeHandler() {
-			@Override
-			public void dispose() {
-				NetworkSaver.saveNetworkToFile(twobytwonn, "twoXtwonn.nn",
-						System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/");
-				System.out.println("Network Saved");
-			}
-		};
-//		registerMethod("dispose", dh);
-//		dh.register(this);
-	}
-
-	public void settings() {
-		size(400, 400);
-	}
-
+	@Override
 	public void draw() {
 		background(255);
 		for (int i = 0; i < 1000; i++) {
@@ -91,7 +36,6 @@ public class TwoByTwoID extends PApplet {
 		}
 		fill(0);
 		text(twobytwonn.getTrainingAttemps(), 200, 380);
-//		noLoop();
 	}
 
 	void drawInputs(Matrix inputs, float x, float y, float w, float h, int oIndex) {
@@ -167,6 +111,71 @@ public class TwoByTwoID extends PApplet {
 		}
 
 		popMatrix();
+	}
+
+	@Override
+	public void settings() {
+		size(400, 400);
+	}
+
+	@Override
+	public void setup() {
+
+		double[][][] ins = { { { 0 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 1 }, { 1 }, { 1 } },
+
+				{ { 1 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 1 }, { 1 }, { 0 } },
+
+				{ { 0 }, { 1 }, { 0 }, { 1 } }, { { 1 }, { 0 }, { 1 }, { 0 } },
+
+				{ { 0 }, { 0 }, { 1 }, { 1 } }, { { 1 }, { 1 }, { 0 }, { 0 } } };
+
+		double[][][] sols = { { { 1 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 0 }, { 0 }, { 0 } },
+				{ { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 0 }, { 1 }, { 0 } },
+				{ { 0 }, { 0 }, { 1 }, { 0 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, };
+		inputs = new Matrix[8];
+		outputs = new Matrix[8];
+		for (int i = 0; i < sols.length; i++) {
+			inputs[i] = new Matrix(ins[i]);
+			outputs[i] = new Matrix(sols[i]);
+		}
+
+		twobytwonn = NetworkSaver.loadNetworkFromFile(System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/",
+				"twoXtwonn.nn");
+
+		if (twobytwonn == null || reset) {
+			twobytwonn = new NeuralNetwork(4);
+			twobytwonn.addLayer(new FeedFowardLayer(4));
+			twobytwonn.addLayer(new FeedFowardLayer(4));
+			twobytwonn.addLayer(new KeepPositiveLayer(8));
+			twobytwonn.addLayer(new FeedFowardLayer(4));
+		}
+		System.out.println("Feed Foward");
+		for (Matrix input : inputs) {
+			twobytwonn.feedFoward(input);
+		}
+//		noStroke();
+		textAlign(CENTER, CENTER);
+
+		dh = new DisposeHandler();
+		registerMethod("dispose", dh);
+//		dh.register(this);
+	}
+
+	public class DisposeHandler {
+		public DisposeHandler() {
+		}
+
+		public void dispose() {
+			NetworkSaver.saveNetworkToFile(twobytwonn, "twoXtwonn.nn",
+					System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/");
+			System.out.println("Network Saved");
+
+		}
+
+		public void register(PApplet p) {
+			p.registerMethod("dispose", this);
+
+		}
 	}
 
 }
