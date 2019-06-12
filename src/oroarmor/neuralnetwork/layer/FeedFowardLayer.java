@@ -39,7 +39,7 @@ public class FeedFowardLayer extends Layer {
 	}
 
 	@Override
-	public Matrix getWeights() {
+	public synchronized Matrix getWeights() {
 		return this.weights;
 	}
 
@@ -57,7 +57,7 @@ public class FeedFowardLayer extends Layer {
 	}
 
 	@Override
-	public void setWeights(Matrix newWeights) {
+	public synchronized void setWeights(Matrix newWeights) {
 		this.weights = newWeights;
 	}
 

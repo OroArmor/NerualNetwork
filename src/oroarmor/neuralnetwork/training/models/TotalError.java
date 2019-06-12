@@ -15,7 +15,7 @@ public class TotalError extends TrainingModel {
 	}
 
 	@Override
-	public void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expectedOutput, Matrix inputs) {
+	public synchronized void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expectedOutput, Matrix inputs) {
 
 //		Matrix outputErrors = expectedOutput.subtractMatrix(layerOutputs[layerOutputs.length - 1]).pow(2).divide(2);
 

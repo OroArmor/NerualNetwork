@@ -13,6 +13,7 @@ public class Matrix implements Serializable {
 		randomMatrix.randomize(rand, lowerBound, upperBound);
 		return randomMatrix;
 	}
+
 	// values
 	double[][] matrix;
 	int rows;
@@ -196,7 +197,7 @@ public class Matrix implements Serializable {
 		return product;
 	}
 
-	public Matrix multiplyMatrix(Matrix other) {
+	public synchronized Matrix multiplyMatrix(Matrix other) {
 
 		if (this.getCols() != other.getRows()) {
 			throw new IllegalArgumentException("Cannot multiply a " + this.getRows() + "x" + this.getCols() + " and a "
@@ -260,7 +261,7 @@ public class Matrix implements Serializable {
 		return this.add(-val);
 	}
 
-	public Matrix subtractMatrix(Matrix other) {
+	public synchronized Matrix subtractMatrix(Matrix other) {
 		Matrix sum = new Matrix(this.getRows(), this.getCols());
 
 		for (int i = 0; i < this.getRows(); i++) {

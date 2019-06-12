@@ -23,7 +23,8 @@ public class NetworkSaver {
 			fos.close();
 			oos.close();
 		} catch (Exception e) {
-			System.err.print(e);
+			return null;
+//			System.err.print(e);
 		}
 		return nn;
 	}

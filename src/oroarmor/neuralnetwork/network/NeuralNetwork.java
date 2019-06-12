@@ -43,7 +43,7 @@ public class NeuralNetwork implements Serializable {
 		return this.trains;
 	}
 
-	public void train(Matrix input, Matrix output, TrainingModel model) {
+	public synchronized void train(Matrix input, Matrix output, TrainingModel model) {
 		trains++;
 		Matrix[] layerOutputs = new Matrix[layers.size()];
 		int i = 0;

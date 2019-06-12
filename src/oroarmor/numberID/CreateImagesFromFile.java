@@ -60,7 +60,8 @@ public class CreateImagesFromFile extends PApplet {
 
 			testI.save(savePath+"images/" + i + ".png");
 			if(i%100 == 0)
-				System.out.println((float)i/600f);
+				System.out.println((float)i/(float)imageAmount/100);
+			
 		}
 	}
 
