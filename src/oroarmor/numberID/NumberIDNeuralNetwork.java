@@ -18,6 +18,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 
 	boolean reset = false;
 	NeuralNetwork numberIDNetwork;
+	PImage randomImage;
 
 	public static void main(String[] args) {
 		PApplet.main("oroarmor.numberID.NumberIDNeuralNetwork");
@@ -42,8 +43,8 @@ public class NumberIDNeuralNetwork extends PApplet {
 
 	public void setup() {
 		int randomID = (int) random(0, 10000);
-		PImage randomImage = loadImage("C:\\oroarmor\\numberID\\test\\images\\" + randomID + ".png");
-		Character randomValue = getIndex("C:\\oroarmor\\numberID\\test\\labels.txt", randomID);
+		randomImage = loadImage("C:\\oroarmor\\numberID\\test\\images\\" + randomID + ".png");
+		System.out.println(getIndex("C:\\oroarmor\\numberID\\test\\labels.txt", randomID));
 		image(randomImage, 0, 0, 280, 280);
 		numberIDNetwork = NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\numberID\\", "numberIDNetwork.nn");
 
@@ -56,64 +57,74 @@ public class NumberIDNeuralNetwork extends PApplet {
 			numberIDNetwork.addLayer(new FeedFowardLayer(16));
 			numberIDNetwork.addLayer(new SoftMaxLayer(10));
 		}
-		Matrix first = numberIDNetwork.feedFoward(getImageData(randomImage)).print();
-
-		Thread[] trainingThreads = new Thread[4];
-
-		int numImages = 6000;
-		int threads = 3;
-		long start = System.currentTimeMillis();
-
-		for (int i = 0; i < 4; i++) {
-
-			GetData getInputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
-				public Matrix getData(String[] args) {
-					Matrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\train\\images\\"
-							+ (Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
-									+ Integer.parseInt(args[0]))
-							+ ".png"));
-					return images;
-				}
-			};
-
-			GetData getOutputs = new GetData(new String[] { i + "", numImages / threads + ""  }) {
-				public Matrix getData(String[] args) {
-					Character trainValue = getIndex("C:\\oroarmor\\numberID\\train\\labels.txt",
-							Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1]) + Integer.parseInt(args[0]));
-					Matrix output = new Matrix(10, 1);
-					output.setValue(Integer.parseInt(trainValue + ""), 0, 1);
-					return output;
-				}
-			};
-
-			Trainer trainer = new Trainer(getInputs, getOutputs, numberIDNetwork, new TotalError(0.01));
-
-			Thread thread = new Thread(trainer);
-			trainingThreads[i] = thread;
-		}
-
-		for (Thread thread : trainingThreads) {
-			thread.start();
-		}
-
-		try {
-			for (Thread thread : trainingThreads) {
-				thread.join();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		numberIDNetwork.feedFoward(getImageData(randomImage)).subtractMatrix(first).print();
-		System.out.println(numberIDNetwork.getTrainingAttemps());
-		System.out.println(System.currentTimeMillis() - start);
-//		NetworkSaver.saveNetworkToFile(numberIDNetwork, "numberIDNetwork.nn", "C:\\oroarmor\\numberID\\");
+		numberIDNetwork.feedFoward(getImageData(randomImage)).multiply(100).print();
+		System.out.println(numberIDNetwork.feedFoward(getImageData(randomImage)).multiply(100).getMax());
+		String dir = System.getProperty("user.dir")+"/src/data/savedNetworks/numberID/";
+		System.out.println(dir);
+		NetworkSaver.saveNetworkToFile(numberIDNetwork, "numberIDNetwork.nn", dir);
+//		train();
 	}
 
 	public void draw() {
 
 	}
 
+	public void train() {
+		long start = System.currentTimeMillis();
+		for (int repeats = 0; repeats < 10; repeats++) {
+			int threads = 15;
+			Thread[] trainingThreads = new Thread[threads];
+
+			int numImages = 60000;
+
+			for (int i = 0; i < threads; i++) {
+
+				GetData getInputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+					public Matrix getData(String[] args) {
+						Matrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\train\\images\\"
+								+ (Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
+										+ Integer.parseInt(args[0]))
+								+ ".png"));
+						return images;
+					}
+				};
+
+				GetData getOutputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+					public Matrix getData(String[] args) {
+						Character trainValue = getIndex("C:\\oroarmor\\numberID\\train\\labels.txt",
+								Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
+										+ Integer.parseInt(args[0]));
+						Matrix output = new Matrix(10, 1);
+						output.setValue(Integer.parseInt(trainValue + ""), 0, 1);
+						return output;
+					}
+				};
+
+				Trainer trainer = new Trainer(getInputs, getOutputs, numberIDNetwork, new TotalError(0.01));
+
+				Thread thread = new Thread(trainer);
+				trainingThreads[i] = thread;
+			}
+			for (Thread thread : trainingThreads) {
+				thread.start();
+			}
+
+			try {
+				for (Thread thread : trainingThreads) {
+					thread.join();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		numberIDNetwork.feedFoward(getImageData(randomImage)).multiply(100).print();
+		System.out.println(numberIDNetwork.feedFoward(getImageData(randomImage)).multiply(100).getMax());
+		System.out.println(numberIDNetwork.getTrainingAttemps());
+		System.out.println(System.currentTimeMillis() - start);
+		NetworkSaver.saveNetworkToFile(numberIDNetwork, "numberIDNetwork.nn", "C:\\oroarmor\\numberID\\");
+	}
+	
+	
 	public Character getIndex(String textFilePath, int index) {
 		FileInputStream textFile = null;
 		try {
@@ -127,7 +138,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 		}
 		return null;
 	}
-
+	
 //	public void mouseClicked() {
 //		setup();
 //	}

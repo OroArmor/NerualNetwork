@@ -1,6 +1,7 @@
 package oroarmor.neuralnetwork.matrix;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class Matrix implements Serializable {
@@ -234,10 +235,11 @@ public class Matrix implements Serializable {
 
 	// prints
 	public Matrix print() {
+		DecimalFormat df = new DecimalFormat("#.##");
 		for (int i = 0; i < this.getRows(); i++) {
 			System.out.print("| ");
 			for (int j = 0; j < this.getCols(); j++) {
-				System.out.print(this.getValue(i, j) + " ");
+				System.out.print(df.format(this.getValue(i, j)) + " ");
 			}
 			System.out.println(" |");
 		}
@@ -282,5 +284,19 @@ public class Matrix implements Serializable {
 		}
 
 		return transposed;
+	}
+	
+	public int getMax() {
+		int maxIndex = 0;
+		double max = Double.MIN_VALUE;
+		
+		for(int i = 0; i < this.getRows(); i++) {
+			if(this.getValue(i,0) > max) {
+				maxIndex = i;
+				max = this.getValue(i,0);
+			}
+		}
+		
+		return maxIndex;
 	}
 }
