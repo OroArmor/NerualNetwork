@@ -2,18 +2,24 @@ package oroarmor.neuralnetwork.matrix;
 
 public class SoftMaxFunction extends MatrixFunction {
 
+	double total;
+	
 	public SoftMaxFunction() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public Matrix applyFunction(Matrix matrix) {
-		return matrix.divide(matrix.collapseRows().transpose().collapseRows().getValue(0, 0));
+		total = matrix.collapseRows().transpose().collapseRows().getValue(0, 0);
+		return matrix.divide(total);
 	}
 
 	@Override
 	public Matrix getDerivative(Matrix matrix) {
 		return matrix;
+	}
+
+	public double getTotal() {
+		return total;
 	}
 
 }

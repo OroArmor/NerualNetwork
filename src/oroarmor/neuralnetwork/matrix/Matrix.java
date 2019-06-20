@@ -234,8 +234,8 @@ public class Matrix implements Serializable {
 	}
 
 	// prints
-	public Matrix print() {
-		DecimalFormat df = new DecimalFormat("#.##");
+	public Matrix print(String format) {
+		DecimalFormat df = new DecimalFormat(format);
 		for (int i = 0; i < this.getRows(); i++) {
 			System.out.print("| ");
 			for (int j = 0; j < this.getCols(); j++) {
@@ -245,6 +245,10 @@ public class Matrix implements Serializable {
 		}
 		System.out.println(" ");
 		return this;
+	}
+	
+	public Matrix print() {
+		return print("#.##");
 	}
 
 	public void randomize(Random rand, double lowerBound, double upperBound) {
