@@ -22,7 +22,9 @@ public class CreateLabelsFromFile extends PApplet {
 				"t10k-labels-idx1-ubyte-uncompressed", "C:\\oroarmor\\numberID\\test\\", "labels.txt", 10000);
 
 		loadTextFromFile(System.getProperty("user.dir") + "/src/data/numberID/train/",
-				"train-labels-idx1-ubyte-uncompressed", "C:\\oroarmor\\numberID\\test\\", "labels.txt", 60000);
+				"train-labels-idx1-ubyte-uncompressed", "C:\\oroarmor\\numberID\\train\\", "labels.txt", 60000);
+		noLoop();
+		System.out.println("Done");
 	}
 
 	public void loadTextFromFile(String filePath, String fileName, String savePath, String saveName, int amount) {
