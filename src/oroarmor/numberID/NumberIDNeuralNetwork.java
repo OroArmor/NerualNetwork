@@ -80,25 +80,23 @@ public class NumberIDNeuralNetwork extends PApplet {
 
 		myTest.resize(28, 28);
 		myTest.updatePixels();
-		
+
 		Matrix outputs = numberIDNetwork.feedFoward(getImageData(myTest)).applyFunction(new SoftMaxFunction());
-		
-		int max = outputs.getMax();
+
 		noStroke();
-		for(int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++) {
 //			fill(255,0,0);
 //			if(i == max) {
 //				fill(0,255,0);
 //			}
-			fill((float)(1-outputs.getValue(i,0))*255f, (float)(outputs.getValue(i,0))*255f,0);
-			rect(i*280/10, 280, 28, 120);
-			
+			fill((float) (1 - outputs.getValue(i, 0)) * 255f, (float) (outputs.getValue(i, 0)) * 255f, 0);
+			rect(i * 280 / 10, 280, 28, 120);
+
 			fill(0);
-			text(i+": \n"+outputs.getValue(i, 0), i*28, 300);
-			
+			text(i + ": \n" + outputs.getValue(i, 0), i * 28, 300);
+
 		}
-		
-		
+
 	}
 
 	public void keyPressed() {

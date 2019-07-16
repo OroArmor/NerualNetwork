@@ -3,7 +3,7 @@ package oroarmor.neuralnetwork.matrix;
 public class SoftMaxFunction extends MatrixFunction {
 
 	double total;
-	
+
 	public SoftMaxFunction() {
 	}
 

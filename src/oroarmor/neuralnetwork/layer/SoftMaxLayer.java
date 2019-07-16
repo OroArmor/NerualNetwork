@@ -11,11 +11,11 @@ public class SoftMaxLayer extends FeedFowardLayer {
 	private static final long serialVersionUID = 1L;
 
 	SoftMaxFunction softMax = new SoftMaxFunction();
-	
+
 	public SoftMaxLayer(int neurons) {
 		super(neurons);
 	}
-	
+
 	public Matrix feedFoward(Matrix inputs) {
 		return super.feedFoward(inputs).applyFunction(softMax);
 	}
@@ -23,7 +23,5 @@ public class SoftMaxLayer extends FeedFowardLayer {
 	public SoftMaxFunction getSoftMaxFunction() {
 		return softMax;
 	}
-	
-	
 
 }

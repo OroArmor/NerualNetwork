@@ -2,7 +2,6 @@ package oroarmor.neuralnetwork.training;
 
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
-import oroarmor.neuralnetwork.training.models.TrainingModel;
 
 public class Tester implements Runnable {
 
@@ -15,7 +14,7 @@ public class Tester implements Runnable {
 		this.getInput = getInput;
 		this.getOutput = getOutput;
 		this.network = network;
-		
+
 	}
 
 	public GetData getGetInput() {
@@ -52,7 +51,7 @@ public class Tester implements Runnable {
 			}
 		}
 	}
-	
+
 	public synchronized void addCorrect() {
 		numCorrect++;
 	}

@@ -15,12 +15,13 @@ public class TotalError extends TrainingModel {
 	}
 
 	@Override
-	public synchronized void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expectedOutput, Matrix inputs) {
+	public synchronized void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expectedOutput,
+			Matrix inputs) {
 
 		Matrix outputErrors = expectedOutput.subtractMatrix(layerOutputs[layerOutputs.length - 1]);
 
 		double totalError = outputErrors.collapseRows().transpose().collapseRows().pow(2).getValue(0, 0);
-		
+
 		Matrix[] deltas = new Matrix[layers.size()];
 
 		int layerIndex = deltas.length - 1;
@@ -48,7 +49,8 @@ public class TotalError extends TrainingModel {
 			Matrix delEoverDelWeight = deltas[i]
 					.multiplyMatrix((i > 0) ? layerOutputs[i - 1].transpose() : inputs.transpose());
 			Layer currentLayer = layers.get(i);
-			currentLayer.setWeights(currentLayer.getWeights().subtractMatrix(delEoverDelWeight.multiply(trainingRate*totalError*10)));
+			currentLayer.setWeights(currentLayer.getWeights()
+					.subtractMatrix(delEoverDelWeight.multiply(trainingRate * totalError * 10)));
 		}
 	}
 }

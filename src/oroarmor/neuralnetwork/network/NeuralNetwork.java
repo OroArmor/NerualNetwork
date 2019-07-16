@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import oroarmor.neuralnetwork.layer.Layer;
-import oroarmor.neuralnetwork.layer.SoftMaxLayer;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.training.models.TrainingModel;
 
@@ -54,7 +53,7 @@ public class NeuralNetwork implements Serializable {
 			} else {
 				layerOutputs[i] = layer.feedFoward(layerOutputs[i - 1]);
 			}
-			
+
 			i++;
 		}
 

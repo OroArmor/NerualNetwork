@@ -246,7 +246,7 @@ public class Matrix implements Serializable {
 		System.out.println(" ");
 		return this;
 	}
-	
+
 	public Matrix print() {
 		return print("#.##");
 	}
@@ -289,18 +289,18 @@ public class Matrix implements Serializable {
 
 		return transposed;
 	}
-	
+
 	public int getMax() {
 		int maxIndex = 0;
 		double max = Double.MIN_VALUE;
-		
-		for(int i = 0; i < this.getRows(); i++) {
-			if(this.getValue(i,0) > max) {
+
+		for (int i = 0; i < this.getRows(); i++) {
+			if (this.getValue(i, 0) > max) {
 				maxIndex = i;
-				max = this.getValue(i,0);
+				max = this.getValue(i, 0);
 			}
 		}
-		
+
 		return maxIndex;
 	}
 }
