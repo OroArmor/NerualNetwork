@@ -6,6 +6,12 @@ import java.util.Random;
 
 public class Matrix implements Serializable {
 
+	// col | col
+	// row | 0 1
+	// row | 2 3
+	// row | 4 5
+	//
+
 	private static final long serialVersionUID = 1L;
 
 	// A couple more constructors
@@ -16,26 +22,9 @@ public class Matrix implements Serializable {
 	}
 
 	// values
-	double[][] matrix;
+	double[] matrix;
 	int rows;
-
 	int cols;
-
-	public Matrix(double[] array) {
-		this.rows = array.length;
-		this.cols = 1;
-
-		matrix = new double[array.length][1];
-		for (int i = 0; i < rows; i++) {
-			matrix[i][0] = array[i];
-		}
-	}
-
-	public Matrix(double[][] array) {
-		this.rows = array.length;
-		this.cols = array[0].length;
-		matrix = array;
-	}
 
 	public Matrix(int rows) {
 		this(rows, 1);
@@ -46,13 +35,19 @@ public class Matrix implements Serializable {
 		this.rows = rows;
 		this.cols = cols;
 
-		matrix = new double[rows][cols];
+		matrix = new double[rows * cols];
 
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				matrix[i][j] = 0;
+				matrix[i * cols + j] = 0;
 			}
 		}
+	}
+
+	public Matrix(double[] matrixArray, int rows, int cols) {
+		this.matrix = matrixArray;
+		this.cols = cols;
+		this.rows = rows;
 	}
 
 	public Matrix abs() {
@@ -162,10 +157,10 @@ public class Matrix implements Serializable {
 	}
 
 	public double getValue(int row, int col) {
-		return matrix[row][col];
+		return matrix[row * this.getCols() + col];
 	}
 
-	public double[][] getValues() {
+	public double[] getValues() {
 		return matrix;
 	}
 
@@ -260,7 +255,7 @@ public class Matrix implements Serializable {
 	}
 
 	public void setValue(int row, int col, double val) {
-		matrix[row][col] = val;
+		matrix[row * this.getCols() + col] = val;
 	}
 
 	public Matrix subtract(double val) {

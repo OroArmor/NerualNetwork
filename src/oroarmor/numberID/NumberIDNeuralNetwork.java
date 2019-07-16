@@ -31,11 +31,11 @@ public class NumberIDNeuralNetwork extends PApplet {
 
 	public Matrix getImageData(PImage image) {
 		image.loadPixels();
-		double[][] matrixArray = new double[image.height * image.width][1];
+		double[] matrixArray = new double[image.height * image.width];
 		for (int i = 0; i < matrixArray.length; i++) {
-			matrixArray[i] = new double[] { (double) brightness(image.pixels[i]) / 255f };
+			matrixArray[i] = (double) brightness(image.pixels[i]) / 255f;
 		}
-		return new Matrix(matrixArray);
+		return new Matrix(matrixArray, matrixArray.length, 1);
 	}
 
 	public void settings() {
@@ -55,14 +55,15 @@ public class NumberIDNeuralNetwork extends PApplet {
 			numberIDNetwork.addLayer(new FeedFowardLayer(16));
 			numberIDNetwork.addLayer(new FeedFowardLayer(10));
 		}
-//		test();
-//		train();
-//		test();
+		test();
+		train();
+		test();
 //		noLoop();
 //		strokeWeight(28);
 	}
 
 	public void draw() {
+//		background(0);
 		if (mousePressed) {
 			stroke(255, 255 / 2);
 			for (int i = 0; i < 5; i++) {
@@ -71,6 +72,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 			}
 		}
 		fill(255);
+		noStroke();
 		rect(0, 280, 280, 120);
 
 		PImage myTest = new PImage(280, 280);
@@ -108,8 +110,8 @@ public class NumberIDNeuralNetwork extends PApplet {
 	public void train() {
 
 		long start = System.currentTimeMillis();
-		for (int repeats = 0; repeats < 10; repeats++) {
-			int threads = 8;
+		for (int repeats = 0; repeats < 100; repeats++) {
+			int threads = 12;
 			Thread[] trainingThreads = new Thread[threads];
 
 			int numImages = 1000;

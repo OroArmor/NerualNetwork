@@ -54,13 +54,13 @@ public class MergeImagesAndLabels extends PApplet {
 
 		image.loadPixels();
 
-		double[][] matrixArray = new double[image.height * image.width][1];
+		double[] matrixArray = new double[image.height * image.width];
 
 		for (int i = 0; i < matrixArray.length; i++) {
-			matrixArray[i] = new double[] { (double) brightness(image.pixels[i]) / 255f };
+			matrixArray[i] = (double) brightness(image.pixels[i]) / 255f;
 		}
 
-		return new Matrix(matrixArray);
+		return new Matrix(matrixArray, matrixArray.length, 1);
 	}
 
 	public void draw() {

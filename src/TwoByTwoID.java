@@ -45,17 +45,15 @@ public class TwoByTwoID extends PApplet {
 		translate(x + w / 2f, y + h / 4f);
 		scale(0.8f);
 
-		double[][] output = outputs.getValues();
+		double[] output = outputs.getValues();
 
 		int index = 0;
 		double max = Double.MIN_VALUE;
 
 		for (int i = 0; i < output.length; i++) {
-			for (int j = 0; j < output[i].length; j++) {
-				if (output[i][j] > max) {
-					index = i;
-					max = output[i][j];
-				}
+			if (output[i] > max) {
+				index = i;
+				max = output[i];
 			}
 		}
 
@@ -129,14 +127,13 @@ public class TwoByTwoID extends PApplet {
 
 				{ { 0 }, { 0 }, { 1 }, { 1 } }, { { 1 }, { 1 }, { 0 }, { 0 } } };
 
-		double[][][] sols = { { { 1 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 0 }, { 0 }, { 0 } },
-				{ { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 1 }, { 0 }, { 0 } }, { { 0 }, { 0 }, { 1 }, { 0 } },
-				{ { 0 }, { 0 }, { 1 }, { 0 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 0 }, { 0 }, { 1 } }, };
+		double[][] sols = { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 },
+				{ 0, 0, 1, 0 }, { 0, 0, 0, 1 }, { 0, 0, 0, 1 } };
 		inputs = new Matrix[8];
 		outputs = new Matrix[8];
 		for (int i = 0; i < sols.length; i++) {
 			inputs[i] = new Matrix(ins[i]);
-			outputs[i] = new Matrix(sols[i]);
+			outputs[i] = new Matrix(sols[i], sols[i].length, 1);
 		}
 
 		twobytwonn = NetworkSaver.loadNetworkFromFile(System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/",
