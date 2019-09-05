@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 
 import oroarmor.neuralnetwork.layer.FeedFowardLayer;
 import oroarmor.neuralnetwork.matrix.Matrix;
-import oroarmor.neuralnetwork.matrix.SoftMaxFunction;
 import oroarmor.neuralnetwork.network.NetworkSaver;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
 import oroarmor.neuralnetwork.training.GetData;
@@ -15,14 +14,15 @@ import oroarmor.neuralnetwork.training.models.TotalError;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class NumberIDNeuralNetwork extends PApplet {
+public class NumberIDNeuralNetworkTrainingGraph extends PApplet {
 
-	boolean reset = false;
 	NeuralNetwork numberIDNetwork;
 	PImage randomImage;
 
+	int totalTrains = 5;
+
 	public static void main(String[] args) {
-		PApplet.main("oroarmor.numberID.NumberIDNeuralNetwork");
+		PApplet.main("oroarmor.numberID.NumberIDNeuralNetworkTrainingGraph");
 	}
 
 	public Matrix getImageData(String string) {
@@ -45,71 +45,36 @@ public class NumberIDNeuralNetwork extends PApplet {
 	public void setup() {
 		background(0);
 		noStroke();
-		numberIDNetwork = NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\numberID\\", "numberIDNetwork.nn");
 
-		if (numberIDNetwork == null || reset) {
-			numberIDNetwork = new NeuralNetwork(28 * 28);
-			numberIDNetwork.addLayer(new FeedFowardLayer(64));
-			numberIDNetwork.addLayer(new FeedFowardLayer(32));
-			numberIDNetwork.addLayer(new FeedFowardLayer(16));
-			numberIDNetwork.addLayer(new FeedFowardLayer(16));
-			numberIDNetwork.addLayer(new FeedFowardLayer(10));
-		}
-//		test();
-//		train(); 
-//		test();
-//		noLoop();
-//		strokeWeight(28);
+		System.out.println("Creating network...");
+
+		numberIDNetwork = new NeuralNetwork(28 * 28);
+		numberIDNetwork.addLayer(new FeedFowardLayer(64));
+		numberIDNetwork.addLayer(new FeedFowardLayer(32));
+		numberIDNetwork.addLayer(new FeedFowardLayer(16));
+		numberIDNetwork.addLayer(new FeedFowardLayer(16));
+		numberIDNetwork.addLayer(new FeedFowardLayer(10));
+		System.out.println("Training...");
+		train();
 	}
 
 	public void draw() {
-		if (mousePressed) {
-			stroke(255, 255 / 2);
-			for (int i = 0; i < 5; i++) {
-				strokeWeight(25 - i * 5);
-				line(mouseX, mouseY, pmouseX, pmouseY);
-			}
+		int[] numCorrect = new int[totalTrains];
+		for (int i = 0; i < totalTrains; i++) {
+			NeuralNetwork currentLevel = NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\numberID\\trainingGraph\\",
+					"numberIDNetwork_" + (i + 1) + "Trains.nn");
+			numCorrect[i] = test(currentLevel);
 		}
-		fill(255);
-		rect(0, 280, 280, 120);
-
-		PImage imageFromScreen = new PImage(280, 280);
-		imageFromScreen.loadPixels();
-
-		imageFromScreen.copy(g.copy(), 0, 0, 280, 280, 0, 0, 280, 280);
-
-		imageFromScreen.resize(28, 28);
-		imageFromScreen.updatePixels();
-
-		Matrix outputs = numberIDNetwork.feedFoward(getImageData(imageFromScreen)).applyFunction(new SoftMaxFunction());
-
-		noStroke();
-		for (int i = 0; i < 10; i++) {
-			fill((float) (1 - outputs.getValue(i, 0)) * 255f, (float) (outputs.getValue(i, 0)) * 255f, 0);
-			rect(i * 280 / 10, 280, 28, 120);
-			fill(0);
-			text(i + ": \n" + outputs.getValue(i, 0), i * 28, 300);
-		}
-	}
-
-	public void keyPressed() {
-		if (key == 'c') {
-			background(0);
-		}
+		println(numCorrect);
+		noLoop();
 	}
 
 	public void train() {
 		long start = System.currentTimeMillis();
 		int numImages = 60000;
-		
-		
-		
-		for (int repeats = 0; repeats < 10; repeats++) {
-			int threads = 8;
+		for (int repeats = 0; repeats < totalTrains; repeats++) {
+			int threads = 6;
 			Thread[] trainingThreads = new Thread[threads];
-
-			
-
 			for (int i = 0; i < threads; i++) {
 
 				GetData getInputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
@@ -147,14 +112,16 @@ public class NumberIDNeuralNetwork extends PApplet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			NetworkSaver.saveNetworkToFile(numberIDNetwork, "numberIDNetwork_" + (repeats + 1) + "Trains.nn",
+					"C:\\oroarmor\\numberID\\trainingGraph\\");
 			System.out.println(repeats + " " + ((System.currentTimeMillis() - start) / (1000f * (repeats + 1))));
 		}
 		System.out.println(numberIDNetwork.getTrainingAttemps());
 		System.out.println((System.currentTimeMillis() - start) / 1000f + " total seconds");
-		NetworkSaver.saveNetworkToFile(numberIDNetwork, "numberIDNetwork.nn", "C:\\oroarmor\\numberID\\");
+
 	}
 
-	public void test() {
+	public int test(NeuralNetwork network) {
 		Tester.numCorrect = 0;
 		int threads = 8;
 		Thread[] testThreads = new Thread[threads];
@@ -184,7 +151,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 				}
 			};
 
-			Tester tester = new Tester(getInputs, getOutputs, numberIDNetwork);
+			Tester tester = new Tester(getInputs, getOutputs, network);
 
 			Thread thread = new Thread(tester);
 			testThreads[i] = thread;
@@ -201,6 +168,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 			e.printStackTrace();
 		}
 		System.out.println(Tester.numCorrect);
+		return Tester.numCorrect;
 	}
 
 	public Character getIndex(String textFilePath, int index) {
@@ -216,8 +184,4 @@ public class NumberIDNeuralNetwork extends PApplet {
 		}
 		return null;
 	}
-
-//	public void mouseClicked() {
-//		setup();
-//	}
 }
