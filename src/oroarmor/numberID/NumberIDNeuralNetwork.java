@@ -2,6 +2,7 @@ package oroarmor.numberID;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import oroarmor.neuralnetwork.layer.FeedFowardLayer;
 import oroarmor.neuralnetwork.matrix.Matrix;
@@ -47,17 +48,25 @@ public class NumberIDNeuralNetwork extends PApplet {
 		noStroke();
 		numberIDNetwork = NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\numberID\\", "numberIDNetwork.nn");
 
-		if (numberIDNetwork == null || reset) {
-			numberIDNetwork = new NeuralNetwork(28 * 28);
-			numberIDNetwork.addLayer(new FeedFowardLayer(64));
-			numberIDNetwork.addLayer(new FeedFowardLayer(32));
-			numberIDNetwork.addLayer(new FeedFowardLayer(16));
-			numberIDNetwork.addLayer(new FeedFowardLayer(16));
-			numberIDNetwork.addLayer(new FeedFowardLayer(10));
-		}
+//		if (numberIDNetwork == null || reset) {
+//			numberIDNetwork = new NeuralNetwork(28 * 28);
+//			numberIDNetwork.addLayer(new FeedFowardLayer(64));
+//			numberIDNetwork.addLayer(new FeedFowardLayer(32));
+//			numberIDNetwork.addLayer(new FeedFowardLayer(16));
+//			numberIDNetwork.addLayer(new FeedFowardLayer(16));
+//			numberIDNetwork.addLayer(new FeedFowardLayer(10));
+//		}
 		test();
 		train();
 		test();
+		
+//		try {
+//			Runtime.getRuntime().exec("shutdown -h");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 //		noLoop();
 //		strokeWeight(28);
 	}
@@ -110,7 +119,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 	public void train() {
 
 		long start = System.currentTimeMillis();
-		for (int repeats = 0; repeats < 100; repeats++) {
+		for (int repeats = 0; repeats < 10; repeats++) {
 			int threads = 12;
 			Thread[] trainingThreads = new Thread[threads];
 

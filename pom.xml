@@ -39,5 +39,10 @@
 			<artifactId>core</artifactId>
 			<version>3.3.7</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jcuda</groupId>
+			<artifactId>jcuda</artifactId>
+			<version>10.1.0</version>
+		</dependency>
 	</dependencies>
 </project>
