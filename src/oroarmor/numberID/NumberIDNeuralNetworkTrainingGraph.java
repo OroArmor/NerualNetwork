@@ -19,7 +19,7 @@ public class NumberIDNeuralNetworkTrainingGraph extends PApplet {
 	NeuralNetwork numberIDNetwork;
 	PImage randomImage;
 
-	int totalTrains = 5;
+	int totalTrains = 100;
 
 	public static void main(String[] args) {
 		PApplet.main("oroarmor.numberID.NumberIDNeuralNetworkTrainingGraph");
@@ -73,7 +73,7 @@ public class NumberIDNeuralNetworkTrainingGraph extends PApplet {
 		long start = System.currentTimeMillis();
 		int numImages = 60000;
 		for (int repeats = 0; repeats < totalTrains; repeats++) {
-			int threads = 6;
+			int threads = 36;
 			Thread[] trainingThreads = new Thread[threads];
 			for (int i = 0; i < threads; i++) {
 
@@ -123,7 +123,7 @@ public class NumberIDNeuralNetworkTrainingGraph extends PApplet {
 
 	public int test(NeuralNetwork network) {
 		Tester.numCorrect = 0;
-		int threads = 8;
+		int threads = 36;
 		Thread[] testThreads = new Thread[threads];
 
 		int numImages = 10000;

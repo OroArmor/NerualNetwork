@@ -56,8 +56,8 @@ public class NumberIDNeuralNetwork extends PApplet {
 			numberIDNetwork.addLayer(new FeedFowardLayer(10));
 		}
 //		test();
-//		train(); 
-//		test();
+		train(); 
+		test();
 //		noLoop();
 //		strokeWeight(28);
 	}
@@ -104,7 +104,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 		
 		
 		
-		for (int repeats = 0; repeats < 10; repeats++) {
+		for (int repeats = 0; repeats < 5; repeats++) {
 			int threads = 8;
 			Thread[] trainingThreads = new Thread[threads];
 
