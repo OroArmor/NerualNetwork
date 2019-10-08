@@ -232,6 +232,17 @@ public class Matrix implements Serializable {
 		}
 		return duplicate;
 	}
+	
+	public Matrix exp() {
+		Matrix duplicate = new Matrix(this.getRows(), this.getCols());
+
+		for (int i = 0; i < this.getRows(); i++) {
+			for (int j = 0; j < this.getCols(); j++) {
+				duplicate.setValue(i, j, Math.exp(this.getValue(i, j)));
+			}
+		}
+		return duplicate;
+	}
 
 	// prints
 	public Matrix print(String format) {
@@ -302,5 +313,33 @@ public class Matrix implements Serializable {
 		}
 
 		return maxIndex;
+	}
+
+	public Matrix stack(Matrix other) {
+		Matrix stacked = new Matrix(Math.max(this.getRows(), other.getRows()), this.getCols() + other.getCols());
+
+		for (int i = 0; i < stacked.getRows(); i++) {
+			for (int j = 0; j < stacked.getCols(); j++) {
+				if (this.getCols() > j) {
+					if (this.getRows() < i) {
+						stacked.setValue(i, j, 0);
+					} else {
+						stacked.setValue(i, j, this.getValue(i, j));
+					}
+				} else {
+					if (other.getRows() < i) {
+						stacked.setValue(i, j, 0);
+					} else {
+						stacked.setValue(i, j, other.getValue(i, j - this.getCols()));
+					}
+				}
+			}
+		}
+
+		return stacked;
+	}
+
+	public double getSum() {
+		return this.collapseRows().transpose().collapseRows().getValue(0, 0);
 	}
 }

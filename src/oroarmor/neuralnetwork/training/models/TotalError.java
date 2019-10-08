@@ -49,8 +49,7 @@ public class TotalError extends TrainingModel {
 			Matrix delEoverDelWeight = deltas[i]
 					.multiplyMatrix((i > 0) ? layerOutputs[i - 1].transpose() : inputs.transpose());
 			Layer currentLayer = layers.get(i);
-			currentLayer.setWeights(currentLayer.getWeights()
-					.subtractMatrix(delEoverDelWeight.multiply(trainingRate * totalError * 10)));
+			currentLayer.setWeights(currentLayer.getWeights().subtractMatrix(delEoverDelWeight.multiply(trainingRate)));
 		}
 	}
 }

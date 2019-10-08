@@ -44,7 +44,7 @@ public class XORProblem extends PApplet {
 		background(255);
 		for (int i = 0; i < 1000; i++) {
 			for (int j = 0; j < inputs.length; j++) {
-				xornn.train(inputs[j], outputs[j], new TotalError(10));
+				xornn.train(inputs[j], outputs[j], new TotalError(1));
 				trains++;
 			}
 		}

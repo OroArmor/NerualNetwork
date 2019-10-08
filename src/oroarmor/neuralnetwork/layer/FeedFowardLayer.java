@@ -52,13 +52,23 @@ public class FeedFowardLayer extends Layer {
 	public void setup(int previousNeurons) {
 		this.previousNeurons = previousNeurons;
 
-		this.weights = Matrix.randomMatrix(neurons, previousNeurons, new Random(), -1, 1);
+		this.weights = Matrix.randomMatrix(neurons, previousNeurons, new Random(), -0.1, 0.1);
 
 	}
 
 	@Override
 	public synchronized void setWeights(Matrix newWeights) {
 		this.weights = newWeights;
+	}
+
+	@Override
+	public Matrix backPropagate(Matrix errors) {
+		
+		
+		
+		
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

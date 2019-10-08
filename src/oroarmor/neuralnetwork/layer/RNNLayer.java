@@ -1,38 +1,39 @@
 package oroarmor.neuralnetwork.layer;
 
-import java.util.Random;
-
-import oroarmor.neuralnetwork.matrix.KeepPositiveFunction;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.matrix.MatrixFunction;
 
-public class KeepPositiveLayer extends Layer {
+public class RNNLayer extends FeedFowardLayer {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public Matrix weights;
-	int neurons;
-
-	public KeepPositiveLayer(int neurons) {
-		this.neurons = neurons;
+	public RNNLayer(int neurons) {
+		super(neurons);
 	}
+
+	private static final long serialVersionUID = 1L;
+
+	int neurons;
+	int previousNeurons;
+	Matrix inWeights;
+	Matrix prevWeights;
+	Matrix prevOut;
+	
 
 	@Override
 	public Matrix feedFoward(Matrix inputs) {
-		return inputs.applyFunction(new KeepPositiveFunction());
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public MatrixFunction getMatrixFunction() {
 		// TODO Auto-generated method stub
-		return new KeepPositiveFunction();
+		return null;
 	}
 
 	@Override
 	public int getOutputNeurons() {
-		return neurons;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class KeepPositiveLayer extends Layer {
 	@Override
 	public Matrix getWeights() {
 		// TODO Auto-generated method stub
-		return weights;
+		return null;
 	}
 
 	@Override
@@ -55,21 +56,14 @@ public class KeepPositiveLayer extends Layer {
 
 	@Override
 	public void setup(int inputs) {
-		neurons = inputs;
+		// TODO Auto-generated method stub
 
-		weights = Matrix.randomMatrix(neurons, inputs, new Random(), -1, 1);
 	}
 
 	@Override
 	public void setWeights(Matrix newWeights) {
-		weights = newWeights;
-	}
+		// TODO Auto-generated method stub
 
-	@Override
-	public Matrix backPropagate(Matrix errors) {
-
-		
-		return null;
 	}
 
 }

@@ -9,7 +9,14 @@ public class SoftMaxFunction extends MatrixFunction {
 
 	@Override
 	public Matrix applyFunction(Matrix matrix) {
-		total = matrix.collapseRows().transpose().collapseRows().getValue(0, 0);
+
+		matrix = matrix.exp();
+		
+		total = matrix.getSum();
+		if(total==0) {
+			return matrix;
+		}
+		
 		return matrix.divide(total);
 	}
 

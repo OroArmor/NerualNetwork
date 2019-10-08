@@ -1,18 +1,13 @@
 package oroarmor.neuralnetwork.network;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import oroarmor.neuralnetwork.layer.Layer;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.training.models.TrainingModel;
 
-public class NeuralNetwork implements Serializable {
+public class NeuralNetwork extends ANetwork {
 	private static final long serialVersionUID = 1L;
-
-	ArrayList<Layer> layers;
-	int inputs;
-	int trains;
 
 	public NeuralNetwork(int inputNeurons) {
 		inputs = inputNeurons;

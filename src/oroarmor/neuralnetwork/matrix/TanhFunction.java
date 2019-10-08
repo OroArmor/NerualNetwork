@@ -1,8 +1,8 @@
 package oroarmor.neuralnetwork.matrix;
 
-public class TanhMatrix extends MatrixFunction {
+public class TanhFunction extends MatrixFunction {
 
-	public TanhMatrix() {
+	public TanhFunction() {
 	}
 
 	@Override
