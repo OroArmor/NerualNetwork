@@ -13,7 +13,7 @@ import processing.core.PApplet;
 
 public class AutoTest extends PApplet {
 	AutoEncoder encoder;
-	boolean reset = false;
+	boolean reset = true;
 
 	public static int numImages = 15000;
 	public static Matrix[] images = new Matrix[numImages];
@@ -44,18 +44,19 @@ public class AutoTest extends PApplet {
 		encoder = (AutoEncoder) NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\", "test.nn");
 		if (encoder == null || reset) {
 			encoder = new AutoEncoder(28 * 28, 2);
-			encoder.addLayer(new FeedFowardLayer(128));
+
 			encoder.addLayer(new FeedFowardLayer(128));
 			encoder.addLayer(new FeedFowardLayer(64));
-			encoder.addLayer(new FeedFowardLayer(128));
+			encoder.addLayer(new FeedFowardLayer(32));
+			encoder.addLayer(new FeedFowardLayer(64));
 			encoder.addLayer(new FeedFowardLayer(128));
 			encoder.addLayer(new FeedFowardLayer(28 * 28));
 		}
 
 		System.out.println(encoder.trains);
 
-		int numThreads = 15;
-		int numRepeats = 1;
+		int numThreads = 16;
+		int numRepeats = 0;
 
 		Thread[] threads = new Thread[numThreads];
 
@@ -85,12 +86,14 @@ public class AutoTest extends PApplet {
 					e.printStackTrace();
 				}
 			}
-			System.out.println((System.currentTimeMillis()-millis)/1000);
+			System.out.println((System.currentTimeMillis() - millis) / 1000);
 		}
 
 		System.out.println(encoder.trains);
 		NetworkSaver.saveNetworkToFile(encoder, "test.nn", "C:\\oroarmor\\");
 		noStroke();
+
+//		mouseClicked();
 	}
 
 	public void settings() {
@@ -100,8 +103,11 @@ public class AutoTest extends PApplet {
 	public void draw() {
 		frameRate(1);
 		background(0, 0, 0);
-		Matrix test = new Matrix(64, 1);
-		test.randomize(new Random(), 0, 1);
+		Matrix test = new Matrix(32, 1);
+		Random random = new Random();
+		random.setSeed((long) random(-1000, 1000));
+		test.randomize(random, 0, 1);
+		test.print();
 		double[][] values = encoder.feedFoward(test).getValues();
 		for (int i = 0; i < 28; i++) {
 			for (int j = 0; j < 28; j++) {
@@ -109,5 +115,6 @@ public class AutoTest extends PApplet {
 				rect(i * 10, j * 10, 10, 10);
 			}
 		}
+		System.out.println("New Frame");
 	}
 }
