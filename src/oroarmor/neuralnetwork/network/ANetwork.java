@@ -14,9 +14,12 @@ public abstract class ANetwork implements Serializable {
 	public int inputs;
 	public int trains;
 	public ArrayList<Layer> layers;
-	
+
 	public abstract Matrix feedFoward(Matrix inputs);
+
 	public abstract Layer getLayer(int index);
+
 	public abstract int getTrainingAttemps();
+
 	public abstract void train(Matrix input, Matrix output, TrainingModel model);
 }

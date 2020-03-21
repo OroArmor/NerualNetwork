@@ -11,7 +11,7 @@ public class HalfMill extends PApplet {
 	}
 
 	public void setup() {
-		System.out.println(width+" "+height);
+		System.out.println(width + " " + height);
 		noStroke();
 		int counter = 0;
 		int res = 1;

@@ -16,7 +16,6 @@ public class RNNLayer extends FeedFowardLayer {
 	Matrix inWeights;
 	Matrix prevWeights;
 	Matrix prevOut;
-	
 
 	@Override
 	public Matrix feedFoward(Matrix inputs) {

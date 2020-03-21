@@ -22,14 +22,12 @@ public class NumberIDNeuralNetworkOptimized extends PApplet {
 
 	public static int trainingImages = 60000;
 	public static int testingImages = 10000;
-	
+
 	public static PImage[] trainImages = new PImage[trainingImages];
 	public static int[] trainNumbers = new int[trainingImages];
 
 	public static PImage[] testImages = new PImage[testingImages];
 	public static int[] testNumbers = new int[testingImages];
-
-	
 
 	public static void main(String[] args) {
 		PApplet.main("oroarmor.numberID.NumberIDNeuralNetworkOptimized");
@@ -73,7 +71,7 @@ public class NumberIDNeuralNetworkOptimized extends PApplet {
 				trainNumbers);
 		setUpImagesAndValues("C:\\oroarmor\\numberID\\test\\", "labels.txt", testingImages, testImages, testNumbers);
 //		System.out.println((System.currentTimeMillis() - temp) / 1000);
-		
+
 		System.out.println("train+test");
 
 		test();
@@ -132,7 +130,7 @@ public class NumberIDNeuralNetworkOptimized extends PApplet {
 		long start = System.currentTimeMillis();
 		int numImages = trainingImages;
 
-		for (int repeats = 0; repeats < 50; repeats++) {
+		for (int repeats = 0; repeats < 5; repeats++) {
 			int threads = 16;
 			Thread[] trainingThreads = new Thread[threads];
 
@@ -181,7 +179,7 @@ public class NumberIDNeuralNetworkOptimized extends PApplet {
 
 	public void test() {
 		Tester.numCorrect = 0;
-		int threads = 8;
+		int threads = 16;
 		Thread[] testThreads = new Thread[threads];
 
 		int numImages = testingImages;

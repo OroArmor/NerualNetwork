@@ -63,10 +63,7 @@ public class FeedFowardLayer extends Layer {
 
 	@Override
 	public Matrix backPropagate(Matrix errors) {
-		
-		
-		
-		
+
 		// TODO Auto-generated method stub
 		return null;
 	}

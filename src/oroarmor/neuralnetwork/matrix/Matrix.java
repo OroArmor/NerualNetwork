@@ -232,7 +232,7 @@ public class Matrix implements Serializable {
 		}
 		return duplicate;
 	}
-	
+
 	public Matrix exp() {
 		Matrix duplicate = new Matrix(this.getRows(), this.getCols());
 

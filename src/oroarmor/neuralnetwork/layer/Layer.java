@@ -27,6 +27,6 @@ public abstract class Layer implements Serializable {
 	public abstract void setup(int inputs);
 
 	public abstract void setWeights(Matrix newWeights);
-	
+
 	public abstract Matrix backPropagate(Matrix errors);
 }

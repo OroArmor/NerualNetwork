@@ -68,7 +68,6 @@ public class KeepPositiveLayer extends Layer {
 	@Override
 	public Matrix backPropagate(Matrix errors) {
 
-		
 		return null;
 	}
 

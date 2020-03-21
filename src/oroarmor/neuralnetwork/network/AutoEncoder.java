@@ -22,7 +22,7 @@ public class AutoEncoder extends NeuralNetwork {
 			return null;
 		}
 
-		for (int i = encoderLayer+1; i < layers.size(); i++) {
+		for (int i = encoderLayer + 1; i < layers.size(); i++) {
 			inputs = layers.get(i).feedFoward(inputs);
 		}
 		return inputs;

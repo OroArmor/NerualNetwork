@@ -11,12 +11,12 @@ public class SoftMaxFunction extends MatrixFunction {
 	public Matrix applyFunction(Matrix matrix) {
 
 		matrix = matrix.exp();
-		
+
 		total = matrix.getSum();
-		if(total==0) {
+		if (total == 0) {
 			return matrix;
 		}
-		
+
 		return matrix.divide(total);
 	}
 
