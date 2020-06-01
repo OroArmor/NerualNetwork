@@ -6,10 +6,12 @@ public class HalfMill extends PApplet {
 		PApplet.main("HalfMill");
 	}
 
+	@Override
 	public void settings() {
 		size(1000 + (int) random(-20, 20), 500 + (int) random(-10, 10));
 	}
 
+	@Override
 	public void setup() {
 		System.out.println(width + " " + height);
 		noStroke();
@@ -17,8 +19,8 @@ public class HalfMill extends PApplet {
 		int res = 1;
 		for (int i = 0; i < width; i += res) {
 			for (int j = 0; j < height; j += res) {
-				int black = (counter++) % 2;
-				int bwColor = color((black * 255));
+				int black = counter++ % 2;
+				int bwColor = color(black * 255);
 				fill(bwColor);
 				rect(i, j, res, res);
 			}

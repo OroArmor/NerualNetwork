@@ -5,7 +5,7 @@ import oroarmor.neuralnetwork.matrix.Matrix;
 public class AutoEncoder extends NeuralNetwork {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

@@ -11,7 +11,7 @@ public class NeuralNetwork extends ANetwork {
 
 	public NeuralNetwork(int inputNeurons) {
 		inputs = inputNeurons;
-		layers = new ArrayList<Layer>();
+		layers = new ArrayList<>();
 	}
 
 	public void addLayer(Layer layer) {
@@ -23,6 +23,7 @@ public class NeuralNetwork extends ANetwork {
 		layers.add(layer);
 	}
 
+	@Override
 	public Matrix feedFoward(Matrix inputs) {
 		for (Layer layer : layers) {
 			inputs = layer.feedFoward(inputs);
@@ -30,14 +31,17 @@ public class NeuralNetwork extends ANetwork {
 		return inputs;
 	}
 
+	@Override
 	public Layer getLayer(int layerIndex) {
 		return layers.get(layerIndex);
 	}
 
+	@Override
 	public int getTrainingAttemps() {
-		return this.trains;
+		return trains;
 	}
 
+	@Override
 	public synchronized void train(Matrix input, Matrix output, TrainingModel model) {
 		trains++;
 		Matrix[] layerOutputs = new Matrix[layers.size()];

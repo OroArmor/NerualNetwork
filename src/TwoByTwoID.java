@@ -94,7 +94,7 @@ public class TwoByTwoID extends PApplet {
 			fill(0, 255, 0);
 		}
 
-		rect(0 - (w / 2f), 0 - (h / 4f), w, h);
+		rect(0 - w / 2f, 0 - h / 4f, w, h);
 		fill(0);
 		textSize(20);
 		text(what, 0, h / 2f);

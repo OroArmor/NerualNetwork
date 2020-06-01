@@ -2,13 +2,12 @@ package oroarmor.neuralnetwork.layer;
 
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.matrix.MatrixFunction;
-import oroarmor.neuralnetwork.matrix.SigmoidMatrix;
 import oroarmor.neuralnetwork.matrix.TanhFunction;
 
 public class TanhLayer extends FeedFowardLayer {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
