@@ -2,9 +2,6 @@ package oroarmor.numberID;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-
-import oroarmor.neuralnetwork.layer.FeedFowardLayer;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.matrix.SoftMaxFunction;
 import oroarmor.neuralnetwork.network.NetworkSaver;
@@ -39,10 +36,12 @@ public class NumberIDNeuralNetwork extends PApplet {
 		return new Matrix(matrixArray, matrixArray.length, 1);
 	}
 
+	@Override
 	public void settings() {
 		size(280, 400);
 	}
 
+	@Override
 	public void setup() {
 		background(0);
 		noStroke();
@@ -59,18 +58,19 @@ public class NumberIDNeuralNetwork extends PApplet {
 		test();
 		train();
 		test();
-		
+
 //		try {
 //			Runtime.getRuntime().exec("shutdown -h");
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
+
 //		noLoop();
 //		strokeWeight(28);
 	}
 
+	@Override
 	public void draw() {
 //		background(0);
 		if (mousePressed) {
@@ -100,7 +100,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 //			if(i == max) {
 //				fill(0,255,0);
 //			}
-			fill((float) (1 - outputs.getValue(i, 0)) * 255f, (float) (outputs.getValue(i, 0)) * 255f, 0);
+			fill((float) (1 - outputs.getValue(i, 0)) * 255f, (float) outputs.getValue(i, 0) * 255f, 0);
 			rect(i * 280 / 10, 280, 28, 120);
 
 			fill(0);
@@ -110,6 +110,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 
 	}
 
+	@Override
 	public void keyPressed() {
 		if (key == 'c') {
 			background(0);
@@ -128,6 +129,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 			for (int i = 0; i < threads; i++) {
 
 				GetData getInputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+					@Override
 					public Matrix getData(String[] args) {
 						Matrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\train\\images\\"
 								+ (Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
@@ -138,6 +140,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 				};
 
 				GetData getOutputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+					@Override
 					public Matrix getData(String[] args) {
 						Character trainValue = getIndex("C:\\oroarmor\\numberID\\train\\labels.txt",
 								Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
@@ -164,7 +167,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println(repeats + " " + ((System.currentTimeMillis() - start) / (1000f * (repeats + 1))));
+			System.out.println(repeats + " " + (System.currentTimeMillis() - start) / (1000f * (repeats + 1)));
 		}
 		System.out.println(numberIDNetwork.getTrainingAttemps());
 		System.out.println((System.currentTimeMillis() - start) / 1000f + " total seconds");
@@ -181,6 +184,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 		for (int i = 0; i < threads; i++) {
 
 			GetData getInputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+				@Override
 				public Matrix getData(String[] args) {
 					Matrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\test\\images\\"
 							+ (Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
@@ -191,6 +195,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 			};
 
 			GetData getOutputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+				@Override
 				public Matrix getData(String[] args) {
 					Character trainValue = getIndex("C:\\oroarmor\\numberID\\test\\labels.txt",
 							Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])

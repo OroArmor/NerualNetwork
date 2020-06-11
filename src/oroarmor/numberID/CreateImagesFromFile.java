@@ -13,10 +13,12 @@ public class CreateImagesFromFile extends PApplet {
 		PApplet.main("oroarmor.numberID.CreateImagesFromFile");
 	}
 
+	@Override
 	public void settings() {
 		size(280, 280);
 	}
 
+	@Override
 	public void setup() {
 		surface.setVisible(false);
 		loadImagesFromFile(System.getProperty("user.dir") + "/src/data/numberID/train/",
@@ -48,7 +50,7 @@ public class CreateImagesFromFile extends PApplet {
 
 			for (int j = 0; j < pixels.length; j++) {
 				byte value = imageByte[j + 16 + 28 * 28 * i];
-				pixels[j] = color((int) ((value >= 0) ? value : value + 255));
+				pixels[j] = color(value >= 0 ? value : value + 255);
 			}
 
 			PImage testI = new PImage(28, 28);
@@ -59,12 +61,14 @@ public class CreateImagesFromFile extends PApplet {
 //			testI.resize(280, 280);
 
 			testI.save(savePath + "images/" + i + ".png");
-			if (i % 1000 == 0)
+			if (i % 1000 == 0) {
 				System.out.println((float) i / (float) imageAmount / 100);
+			}
 
 		}
 	}
 
+	@Override
 	public void draw() {
 //		image(firstNum, 0,0,280,280);
 	}

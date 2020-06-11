@@ -7,7 +7,7 @@ public class Gunzipper {
 	private InputStream in;
 
 	public Gunzipper(File f) throws IOException {
-		this.in = new FileInputStream(f);
+		in = new FileInputStream(f);
 	}
 
 	public void unzip(File fileTo) throws IOException {

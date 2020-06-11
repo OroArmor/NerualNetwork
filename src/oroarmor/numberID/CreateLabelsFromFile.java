@@ -13,9 +13,11 @@ public class CreateLabelsFromFile extends PApplet {
 		PApplet.main("oroarmor.numberID.CreateLabelsFromFile");
 	}
 
+	@Override
 	public void settings() {
 	}
 
+	@Override
 	public void setup() {
 		surface.setVisible(false);
 		loadTextFromFile(System.getProperty("user.dir") + "/src/data/numberID/test/",
@@ -61,6 +63,7 @@ public class CreateLabelsFromFile extends PApplet {
 
 	}
 
+	@Override
 	public void draw() {
 	}
 

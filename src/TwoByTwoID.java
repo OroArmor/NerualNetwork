@@ -19,7 +19,7 @@ public class TwoByTwoID extends PApplet {
 
 	Matrix[] outputs;
 
-	boolean reset = false;
+	boolean reset = true;
 
 	@Override
 	public void draw() {
@@ -92,7 +92,7 @@ public class TwoByTwoID extends PApplet {
 			fill(0, 255, 0);
 		}
 
-		rect(0 - (w / 2f), 0 - (h / 4f), w, h);
+		rect(0 - w / 2f, 0 - h / 4f, w, h);
 		fill(0);
 		textSize(20);
 		text(what, 0, h / 2f);
@@ -119,20 +119,20 @@ public class TwoByTwoID extends PApplet {
 	@Override
 	public void setup() {
 
-		double[][][] ins = { { { 0 }, { 0 }, { 0 }, { 0 } }, { { 1 }, { 1 }, { 1 }, { 1 } },
+		double[][][] ins = { { { 0, 0, 0, 0 } }, { { 1, 1, 1, 1 } },
 
-				{ { 1 }, { 0 }, { 0 }, { 1 } }, { { 0 }, { 1 }, { 1 }, { 0 } },
+				{ { 1, 0, 0, 1 } }, { { 0, 1, 1, 0 } },
 
-				{ { 0 }, { 1 }, { 0 }, { 1 } }, { { 1 }, { 0 }, { 1 }, { 0 } },
+				{ { 0, 1, 0, 1 } }, { { 1, 0, 1, 0 } },
 
-				{ { 0 }, { 0 }, { 1 }, { 1 } }, { { 1 }, { 1 }, { 0 }, { 0 } } };
+				{ { 0, 0, 1, 1 } }, { { 1, 1, 0, 0 } } };
 
 		double[][] sols = { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 },
 				{ 0, 0, 1, 0 }, { 0, 0, 0, 1 }, { 0, 0, 0, 1 } };
 		inputs = new Matrix[8];
 		outputs = new Matrix[8];
 		for (int i = 0; i < sols.length; i++) {
-			inputs[i] = new Matrix(ins[i]);
+			inputs[i] = new Matrix(ins[i][0], 4, 1);
 			outputs[i] = new Matrix(sols[i], sols[i].length, 1);
 		}
 

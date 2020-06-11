@@ -7,8 +7,10 @@ import oroarmor.neuralnetwork.matrix.Matrix;
 
 public abstract class TrainingModel {
 
+	protected double trainingRate;
+
 	public TrainingModel(double trainingRate) {
-		// TODO Auto-generated constructor stub
+		this.trainingRate = trainingRate;
 	}
 
 	public abstract void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expected, Matrix input);

@@ -15,19 +15,22 @@ public class MergeImagesAndLabels extends PApplet {
 		PApplet.main("oroarmor.numberID.MergeImagesAndLabels");
 	}
 
+	@Override
 	public void settings() {
 		size(280, 280);
 	}
 
+	@Override
 	public void setup() {
 //		surface.setVisible(false);
 		mergeImagesAndLabels("C:\\oroarmor\\numberID\\train\\labels.txt", "C:\\oroarmor\\numberID\\train\\images\\",
 				"TEMP", 60000);
 	}
 
+	@SuppressWarnings("unused")
 	public Map<Matrix, Character> mergeImagesAndLabels(String textFilePath, String imagePath, String savePath,
 			int imageAmount) {
-		Map<Matrix, Character> map = new HashMap<Matrix, Character>();
+		Map<Matrix, Character> map = new HashMap<>();
 		FileInputStream textFile = null;
 		try {
 			textFile = new FileInputStream(new File(textFilePath));
@@ -63,6 +66,7 @@ public class MergeImagesAndLabels extends PApplet {
 		return new Matrix(matrixArray, matrixArray.length, 1);
 	}
 
+	@Override
 	public void draw() {
 	}
 

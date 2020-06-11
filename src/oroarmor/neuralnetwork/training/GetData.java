@@ -2,7 +2,7 @@ package oroarmor.neuralnetwork.training;
 
 import oroarmor.neuralnetwork.matrix.Matrix;
 
-public class GetData {
+public abstract class GetData {
 
 	public String[] globalArgs;
 
@@ -14,7 +14,5 @@ public class GetData {
 
 	}
 
-	public Matrix getData(String[] args) {
-		return null;
-	}
+	public abstract Matrix getData(String[] args);
 }

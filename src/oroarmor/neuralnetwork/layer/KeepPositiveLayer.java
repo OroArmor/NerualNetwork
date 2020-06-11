@@ -9,7 +9,7 @@ import oroarmor.neuralnetwork.matrix.MatrixFunction;
 public class KeepPositiveLayer extends Layer {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	public Matrix weights;

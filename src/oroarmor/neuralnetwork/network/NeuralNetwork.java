@@ -16,7 +16,7 @@ public class NeuralNetwork implements Serializable {
 
 	public NeuralNetwork(int inputNeurons) {
 		inputs = inputNeurons;
-		layers = new ArrayList<Layer>();
+		layers = new ArrayList<>();
 	}
 
 	public void addLayer(Layer layer) {
@@ -40,7 +40,7 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	public int getTrainingAttemps() {
-		return this.trains;
+		return trains;
 	}
 
 	public synchronized void train(Matrix input, Matrix output, TrainingModel model) {

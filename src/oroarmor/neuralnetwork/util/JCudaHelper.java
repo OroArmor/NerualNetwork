@@ -10,7 +10,7 @@ import jcuda.CudaException;
 
 public class JCudaHelper {
 	private static final Logger logger = Logger.getLogger(JCudaHelper.class.getName());
-	
+
 	public static String invokeNvcc(String cuFileName, String targetFileType, boolean forceRebuild,
 			String... nvccArguments) {
 		if (!"cubin".equalsIgnoreCase(targetFileType) && !"ptx".equalsIgnoreCase(targetFileType)) {

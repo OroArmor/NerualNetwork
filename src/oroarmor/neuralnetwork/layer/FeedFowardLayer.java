@@ -35,30 +35,30 @@ public class FeedFowardLayer extends Layer {
 
 	@Override
 	public Matrix[] getParameters() {
-		return new Matrix[] { this.weights };
+		return new Matrix[] { weights };
 	}
 
 	@Override
 	public synchronized Matrix getWeights() {
-		return this.weights;
+		return weights;
 	}
 
 	@Override
 	public void setParameters(Matrix[] parameters) {
-		this.weights = parameters[0];
+		weights = parameters[0];
 	}
 
 	@Override
 	public void setup(int previousNeurons) {
 		this.previousNeurons = previousNeurons;
 
-		this.weights = Matrix.randomMatrix(neurons, previousNeurons, new Random(), -1, 1);
+		weights = Matrix.randomMatrix(neurons, previousNeurons, new Random(), -1, 1);
 
 	}
 
 	@Override
 	public synchronized void setWeights(Matrix newWeights) {
-		this.weights = newWeights;
+		weights = newWeights;
 	}
 
 }

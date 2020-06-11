@@ -45,27 +45,27 @@ public class Matrix implements Serializable {
 	}
 
 	public Matrix(double[] matrixArray, int rows, int cols) {
-		this.matrix = matrixArray;
+		matrix = matrixArray;
 		this.cols = cols;
 		this.rows = rows;
 	}
 
 	public Matrix abs() {
-		Matrix abs = new Matrix(this.getRows(), 1);
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				abs.setValue(i, j, Math.abs(this.getValue(i, j)));
+		Matrix abs = new Matrix(getRows(), 1);
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				abs.setValue(i, j, Math.abs(getValue(i, j)));
 			}
 		}
 		return abs;
 	}
 
 	public Matrix add(double val) {
-		Matrix sum = new Matrix(this.getRows(), this.getCols());
+		Matrix sum = new Matrix(getRows(), getCols());
 
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				double currentProduct = this.getValue(i, j) + val;
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				double currentProduct = getValue(i, j) + val;
 				sum.setValue(i, j, currentProduct);
 			}
 		}
@@ -76,16 +76,16 @@ public class Matrix implements Serializable {
 	// matrix operations
 	public Matrix addMatrix(Matrix other) {
 
-		if (other.rows != this.rows || other.cols != this.cols) {
-			throw new IllegalArgumentException("Cannot add a " + this.getRows() + "x" + this.getCols() + " and a "
+		if (other.rows != rows || other.cols != cols) {
+			throw new IllegalArgumentException("Cannot add a " + getRows() + "x" + getCols() + " and a "
 					+ other.getRows() + "x" + other.getCols() + " matrix together");
 		}
 
-		Matrix sum = new Matrix(this.getRows(), this.getCols());
+		Matrix sum = new Matrix(getRows(), getCols());
 
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				double currentSum = this.getValue(i, j) + other.getValue(i, j);
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				double currentSum = getValue(i, j) + other.getValue(i, j);
 				sum.setValue(i, j, currentSum);
 			}
 		}
@@ -93,11 +93,11 @@ public class Matrix implements Serializable {
 	}
 
 	public Matrix addOnetoEnd() {
-		Matrix modified = new Matrix(this.getRows() + 1, this.getCols());
+		Matrix modified = new Matrix(getRows() + 1, getCols());
 
 		for (int j = 0; j < modified.getCols(); j++) {
 			for (int i = 0; i < modified.getRows() - 1; i++) {
-				modified.setValue(i, j, this.getValue(i, j));
+				modified.setValue(i, j, getValue(i, j));
 			}
 			modified.setValue(modified.getRows() - 1, j, 1);
 		}
@@ -112,23 +112,23 @@ public class Matrix implements Serializable {
 
 	@Override
 	public Matrix clone() {
-		Matrix duplicate = new Matrix(this.getRows(), this.getCols());
+		Matrix duplicate = new Matrix(getRows(), getCols());
 
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				duplicate.setValue(i, j, this.getValue(i, j));
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				duplicate.setValue(i, j, getValue(i, j));
 			}
 		}
 		return duplicate;
 	}
 
 	public Matrix collapseRows() {
-		Matrix collapsed = new Matrix(this.getRows(), 1);
+		Matrix collapsed = new Matrix(getRows(), 1);
 
-		for (int i = 0; i < this.getRows(); i++) {
+		for (int i = 0; i < getRows(); i++) {
 			double rowSum = 0;
-			for (int j = 0; j < this.getCols(); j++) {
-				rowSum += this.getValue(i, j);
+			for (int j = 0; j < getCols(); j++) {
+				rowSum += getValue(i, j);
 			}
 			collapsed.setValue(i, 0, rowSum);
 		}
@@ -140,7 +140,7 @@ public class Matrix implements Serializable {
 		if (val == 0) {
 			throw new IllegalArgumentException("Argument 'divisor' is 0");
 		}
-		return this.multiply(1 / val);
+		return multiply(1 / val);
 	}
 
 	public int getCols() {
@@ -157,7 +157,7 @@ public class Matrix implements Serializable {
 	}
 
 	public double getValue(int row, int col) {
-		return matrix[row * this.getCols() + col];
+		return matrix[row * getCols() + col];
 	}
 
 	public double[] getValues() {
@@ -165,14 +165,14 @@ public class Matrix implements Serializable {
 	}
 
 	public Matrix hadamard(Matrix other) {
-		if (this.getRows() != other.getRows() || this.getCols() != other.getCols()) {
-			throw new IllegalArgumentException("Cannot multiply a " + this.getRows() + "x" + this.getCols() + " and a "
+		if (getRows() != other.getRows() || getCols() != other.getCols()) {
+			throw new IllegalArgumentException("Cannot multiply a " + getRows() + "x" + getCols() + " and a "
 					+ other.getRows() + "x" + other.getCols() + " matrix together");
 		}
-		Matrix product = new Matrix(this.getRows(), this.getCols());
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				product.setValue(i, j, this.getValue(i, j) * other.getValue(i, j));
+		Matrix product = new Matrix(getRows(), getCols());
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				product.setValue(i, j, getValue(i, j) * other.getValue(i, j));
 			}
 		}
 
@@ -181,11 +181,11 @@ public class Matrix implements Serializable {
 
 	// value operations
 	public Matrix multiply(double val) {
-		Matrix product = new Matrix(this.getRows(), this.getCols());
+		Matrix product = new Matrix(getRows(), getCols());
 
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				double currentProduct = this.getValue(i, j) * val;
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				double currentProduct = getValue(i, j) * val;
 				product.setValue(i, j, currentProduct);
 			}
 		}
@@ -195,19 +195,19 @@ public class Matrix implements Serializable {
 
 	public synchronized Matrix multiplyMatrix(Matrix other) {
 
-		if (this.getCols() != other.getRows()) {
-			throw new IllegalArgumentException("Cannot multiply a " + this.getRows() + "x" + this.getCols() + " and a "
+		if (getCols() != other.getRows()) {
+			throw new IllegalArgumentException("Cannot multiply a " + getRows() + "x" + getCols() + " and a "
 					+ other.getRows() + "x" + other.getCols() + " matrix together");
 		}
 
-		Matrix product = new Matrix(this.getRows(), other.getCols());
+		Matrix product = new Matrix(getRows(), other.getCols());
 
 		for (int i = 0; i < product.getRows(); i++) {
 			for (int j = 0; j < product.getCols(); j++) {
 				double currentVal = 0;
 
-				for (int k = 0; k < this.getCols(); k++) {
-					currentVal += this.getValue(i, k) * other.getValue(k, j);
+				for (int k = 0; k < getCols(); k++) {
+					currentVal += getValue(i, k) * other.getValue(k, j);
 				}
 
 				product.setValue(i, j, currentVal);
@@ -218,11 +218,11 @@ public class Matrix implements Serializable {
 	}
 
 	public Matrix pow(double power) {
-		Matrix duplicate = new Matrix(this.getRows(), this.getCols());
+		Matrix duplicate = new Matrix(getRows(), getCols());
 
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				duplicate.setValue(i, j, Math.pow(this.getValue(i, j), power));
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				duplicate.setValue(i, j, Math.pow(getValue(i, j), power));
 			}
 		}
 		return duplicate;
@@ -231,10 +231,10 @@ public class Matrix implements Serializable {
 	// prints
 	public Matrix print(String format) {
 		DecimalFormat df = new DecimalFormat(format);
-		for (int i = 0; i < this.getRows(); i++) {
+		for (int i = 0; i < getRows(); i++) {
 			System.out.print("| ");
-			for (int j = 0; j < this.getCols(); j++) {
-				System.out.print(df.format(this.getValue(i, j)) + " ");
+			for (int j = 0; j < getCols(); j++) {
+				System.out.print(df.format(getValue(i, j)) + " ");
 			}
 			System.out.println(" |");
 		}
@@ -247,27 +247,27 @@ public class Matrix implements Serializable {
 	}
 
 	public void randomize(Random rand, double lowerBound, double upperBound) {
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				this.setValue(i, j, rand.nextDouble() * (upperBound - lowerBound) + lowerBound);
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				setValue(i, j, rand.nextDouble() * (upperBound - lowerBound) + lowerBound);
 			}
 		}
 	}
 
 	public void setValue(int row, int col, double val) {
-		matrix[row * this.getCols() + col] = val;
+		matrix[row * getCols() + col] = val;
 	}
 
 	public Matrix subtract(double val) {
-		return this.add(-val);
+		return add(-val);
 	}
 
 	public synchronized Matrix subtractMatrix(Matrix other) {
-		Matrix sum = new Matrix(this.getRows(), this.getCols());
+		Matrix sum = new Matrix(getRows(), getCols());
 
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				double currentSum = this.getValue(i, j) - other.getValue(i, j);
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				double currentSum = getValue(i, j) - other.getValue(i, j);
 				sum.setValue(i, j, currentSum);
 			}
 		}
@@ -275,10 +275,10 @@ public class Matrix implements Serializable {
 	}
 
 	public Matrix transpose() {
-		Matrix transposed = new Matrix(this.getCols(), this.getRows());
-		for (int i = 0; i < this.getRows(); i++) {
-			for (int j = 0; j < this.getCols(); j++) {
-				transposed.setValue(j, i, this.getValue(i, j));
+		Matrix transposed = new Matrix(getCols(), getRows());
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				transposed.setValue(j, i, getValue(i, j));
 			}
 		}
 
@@ -289,10 +289,10 @@ public class Matrix implements Serializable {
 		int maxIndex = 0;
 		double max = Double.MIN_VALUE;
 
-		for (int i = 0; i < this.getRows(); i++) {
-			if (this.getValue(i, 0) > max) {
+		for (int i = 0; i < getRows(); i++) {
+			if (getValue(i, 0) > max) {
 				maxIndex = i;
-				max = this.getValue(i, 0);
+				max = getValue(i, 0);
 			}
 		}
 

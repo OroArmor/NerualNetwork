@@ -6,7 +6,7 @@ import static jcuda.driver.JCudaDriver.cuDeviceGet;
 import static jcuda.driver.JCudaDriver.cuInit;
 import static jcuda.driver.JCudaDriver.cuLaunchKernel;
 import static jcuda.driver.JCudaDriver.cuModuleGetFunction;
-import static jcuda.driver.JCudaDriver.cuModuleLoad;
+import static jcuda.driver.JCudaDriver.*;
 
 import jcuda.Pointer;
 import jcuda.driver.CUcontext;
@@ -14,6 +14,7 @@ import jcuda.driver.CUdevice;
 import jcuda.driver.CUfunction;
 import jcuda.driver.CUmodule;
 import jcuda.driver.JCudaDriver;
+import jcuda.runtime.JCuda;
 import oroarmor.neuralnetwork.util.Dim3;
 import oroarmor.neuralnetwork.util.JCudaHelper;
 
@@ -39,7 +40,7 @@ public class MatrixKernel {
 	public void runKernel(Pointer parameters, Dim3 gridSize, Dim3 blockSize, Pointer... output) {
 		System.out.println("Running kernel " + name);
 		cuLaunchKernel(//
-				function, //Kernel Function
+				function, // Kernel Function
 				gridSize.x, gridSize.y, gridSize.z, // Grid dimension
 				blockSize.x, blockSize.y, blockSize.z, // Block dimension
 				0, null, // Shared memory size and stream
@@ -60,6 +61,17 @@ public class MatrixKernel {
 	public static void InitJCuda(boolean setExceptions) {
 		if (!INIT) {
 			JCudaDriver.setExceptionsEnabled(setExceptions);
+
+			JCuda.cudaDeviceReset();
+
+			int[] runtime = new int[1];
+			JCuda.cudaRuntimeGetVersion(runtime);
+
+			int[] driver = new int[1];
+			JCuda.cudaRuntimeGetVersion(driver);
+
+			System.out.println("Runtime=" + runtime[0]);
+			System.out.println("Driver=" + driver[0]);
 
 			// Initialize the driver and create a context for the first device.
 			cuInit(0);
