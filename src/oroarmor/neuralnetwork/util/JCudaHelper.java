@@ -71,7 +71,7 @@ public class JCudaHelper {
 
 	private static byte[] toByteArray(InputStream inputStream) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte buffer[] = new byte[8192];
+		byte[] buffer = new byte[8192];
 		while (true) {
 			int read = inputStream.read(buffer);
 			if (read == -1) {

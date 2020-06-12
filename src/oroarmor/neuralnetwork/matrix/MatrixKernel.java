@@ -46,6 +46,7 @@ public class MatrixKernel {
 				0, null, // Shared memory size and stream
 				parameters, null // Kernel- and extra parameters
 		);
+
 		cuCtxSynchronize();
 
 		System.out.println(output);

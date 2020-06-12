@@ -8,28 +8,22 @@ import oroarmor.neuralnetwork.util.Dim3;
 public class NumberIDJCuda {
 
 	public static void main(String[] args) {
-
 		MatrixKernel.InitJCuda(true);
 
-		MatrixKernel test = new MatrixKernel("test2");
+		MatrixKernel testKernel = new MatrixKernel("test2");
 
-		test.loadKernel("src/data/matrixKernels/test2.cu");
+		testKernel.loadKernel("src/data/matrixKernels/test2.cu");
 
-		JCudaMatrix testM = new JCudaMatrix(1, 1);
-
-		testM.createPointers();
+		JCudaMatrix matrix = new JCudaMatrix(16, 1);
 
 		Dim3 blockSize = new Dim3(16);
-		Dim3 gridSize = new Dim3((int) Math.ceil(testM.getCols() * testM.getRows() / (double) blockSize.x));
+		Dim3 gridSize = new Dim3((int) Math.ceil(matrix.getCols() * matrix.getRows() / (double) blockSize.x));
 
-		System.out.println(blockSize);
-		System.out.println(gridSize);
+		Pointer params = Pointer.to(matrix.getSizePointer(), matrix.getMatrixPointer());
 
-		Pointer params = Pointer.to(testM.getSizePointer(), testM.getMatrixPointer());
+		testKernel.runKernel(params, gridSize, blockSize);
 
-		System.out.println(params);
-
-		test.runKernel(params, gridSize, blockSize);
+		matrix.toCPUMatrix().print();
 	}
 
 }

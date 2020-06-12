@@ -1,6 +1,7 @@
 package oroarmor.neuralnetwork.matrix;
 
 import static jcuda.driver.JCudaDriver.cuMemAlloc;
+import static jcuda.driver.JCudaDriver.cuMemcpyDtoH;
 import static jcuda.driver.JCudaDriver.cuMemcpyHtoD;
 
 import jcuda.Pointer;
@@ -13,7 +14,8 @@ public class JCudaMatrix extends Matrix {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	Pointer rowPointer, colPointer, matrixPointer, sizePointer;
+	private CUdeviceptr deviceMPtr;
+	private Pointer matrixPointer, rowPointer, columnPointer, sizePointer;
 
 	public JCudaMatrix(int rows) {
 		super(rows);
@@ -31,25 +33,16 @@ public class JCudaMatrix extends Matrix {
 	}
 
 	public void createPointers() {
-		CUdeviceptr deviceMPtr = new CUdeviceptr();
-		cuMemAlloc(deviceMPtr, rows * cols * Sizeof.DOUBLE);
-		matrixPointer = Pointer.to(matrix);
-		cuMemcpyHtoD(deviceMPtr, matrixPointer, rows * cols * Sizeof.DOUBLE);
+		int matrixByteSize = rows * cols * Sizeof.DOUBLE;
 
-		CUdeviceptr deviceRPtr = new CUdeviceptr();
-		cuMemAlloc(deviceRPtr, Sizeof.INT);
+		deviceMPtr = new CUdeviceptr();
+		cuMemAlloc(deviceMPtr, matrixByteSize);
+		cuMemcpyHtoD(deviceMPtr, Pointer.to(matrix), matrixByteSize);
+
+		matrixPointer = Pointer.to(deviceMPtr);
 		rowPointer = Pointer.to(new int[] { rows });
-		cuMemcpyHtoD(deviceRPtr, rowPointer, Sizeof.INT);
-
-		CUdeviceptr deviceCPtr = new CUdeviceptr();
-		cuMemAlloc(deviceCPtr, Sizeof.INT);
-		colPointer = Pointer.to(new int[] { cols });
-		cuMemcpyHtoD(deviceCPtr, colPointer, Sizeof.INT);
-
-		CUdeviceptr deviceSPtr = new CUdeviceptr();
-		cuMemAlloc(deviceSPtr, Sizeof.INT);
-		sizePointer = Pointer.to(new int[] { cols * rows });
-		cuMemcpyHtoD(deviceSPtr, sizePointer, Sizeof.INT);
+		columnPointer = Pointer.to(new int[] { cols });
+		sizePointer = Pointer.to(new int[] { rows * cols });
 	}
 
 	public Pointer getMatrixPointer() {
@@ -61,11 +54,18 @@ public class JCudaMatrix extends Matrix {
 	}
 
 	public Pointer getColumnPointer() {
-		return colPointer;
+		return columnPointer;
 	}
 
 	public Pointer getSizePointer() {
 		return sizePointer;
+	}
+
+	public Matrix toCPUMatrix() {
+		double[] gpuMatrix = new double[rows * cols];
+		cuMemcpyDtoH(Pointer.to(gpuMatrix), deviceMPtr, rows * cols * Sizeof.DOUBLE);
+
+		return new Matrix(gpuMatrix, rows, cols);
 	}
 
 }
