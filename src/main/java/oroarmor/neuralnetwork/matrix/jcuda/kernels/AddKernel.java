@@ -2,7 +2,6 @@ package oroarmor.neuralnetwork.matrix.jcuda.kernels;
 
 import jcuda.Pointer;
 import oroarmor.neuralnetwork.matrix.jcuda.JCudaMatrix;
-import oroarmor.neuralnetwork.matrix.jcuda.MatrixKernel;
 import oroarmor.neuralnetwork.util.Dim3;
 
 public class AddKernel extends MatrixKernel {
@@ -11,7 +10,6 @@ public class AddKernel extends MatrixKernel {
 
 	private AddKernel() {
 		super("add");
-		this.loadKernel("src/data/matrixKernels/add.cu");
 	}
 
 	public void add(JCudaMatrix a, JCudaMatrix b, JCudaMatrix out) {

@@ -98,20 +98,6 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
 		return sum;
 	}
 
-	@Override
-	public CPUMatrix addOnetoEnd() {
-		CPUMatrix modified = new CPUMatrix(getRows() + 1, getCols());
-
-		for (int j = 0; j < modified.getCols(); j++) {
-			for (int i = 0; i < modified.getRows() - 1; i++) {
-				modified.setValue(i, j, getValue(i, j));
-			}
-			modified.setValue(modified.getRows() - 1, j, 1);
-		}
-
-		return modified;
-	}
-
 	// functions
 	@Override
 	public CPUMatrix applyFunction(MatrixFunction function) {

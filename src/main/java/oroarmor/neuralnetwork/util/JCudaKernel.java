@@ -1,4 +1,4 @@
-package oroarmor.neuralnetwork.matrix.jcuda;
+package oroarmor.neuralnetwork.util;
 
 import static jcuda.driver.JCudaDriver.cuCtxCreate;
 import static jcuda.driver.JCudaDriver.cuCtxSynchronize;
@@ -15,10 +15,8 @@ import jcuda.driver.CUfunction;
 import jcuda.driver.CUmodule;
 import jcuda.driver.JCudaDriver;
 import jcuda.runtime.JCuda;
-import oroarmor.neuralnetwork.util.Dim3;
-import oroarmor.neuralnetwork.util.JCudaHelper;
 
-public class MatrixKernel {
+public class JCudaKernel {
 
 	public static boolean INIT = false;
 	public static CUmodule module = new CUmodule();
@@ -26,7 +24,7 @@ public class MatrixKernel {
 	CUfunction function = new CUfunction();
 	String name;
 
-	public MatrixKernel(String name) {
+	public JCudaKernel(String name) {
 		this.name = name;
 	}
 

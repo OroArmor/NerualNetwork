@@ -15,8 +15,6 @@ public interface Matrix<T extends Matrix<T>> extends Serializable {
 	// matrix operations
 	T addMatrix(T other);
 
-	T addOnetoEnd();
-
 	// functions
 	T applyFunction(MatrixFunction function);
 

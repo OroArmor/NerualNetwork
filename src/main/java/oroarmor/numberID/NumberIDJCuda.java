@@ -4,24 +4,26 @@ import jcuda.Pointer;
 import jcuda.driver.JCudaDriver;
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.jcuda.JCudaMatrix;
-import oroarmor.neuralnetwork.matrix.jcuda.MatrixKernel;
 import oroarmor.neuralnetwork.util.Dim3;
+import oroarmor.neuralnetwork.util.JCudaKernel;
 
 public class NumberIDJCuda {
 
 	public static void main(String[] args) {
-		MatrixKernel.InitJCuda(true);
+		JCudaKernel.InitJCuda(true);
 
 		long[] free = new long[1], total = new long[1];
 		JCudaDriver.cuMemGetInfo(free, total);
 		System.out.println("Max matricies: " + free[0] / (1024 * 1024 * 8));
 
-		MatrixKernel testKernel = new MatrixKernel("test2");
+		JCudaKernel testKernel = new JCudaKernel("test2");
 
 		testKernel.loadKernel("src/data/matrixKernels/test2.cu");
 
-		JCudaMatrix matrix = new JCudaMatrix(1024, 1024);
-		JCudaMatrix matrix2 = new JCudaMatrix(1024, 1024);
+		int dims = 1 << 2;
+
+		JCudaMatrix matrix = new JCudaMatrix(dims, dims).keep();
+		JCudaMatrix matrix2 = new JCudaMatrix(dims, dims).keep();
 
 		Dim3 blockSize = new Dim3(1024);
 		Dim3 gridSize = new Dim3((int) Math.ceil(matrix.getCols() * matrix.getRows() / (double) blockSize.x));
@@ -35,7 +37,9 @@ public class NumberIDJCuda {
 		CPUMatrix cpuMatrix = matrix.toCPUMatrix();
 		CPUMatrix cpuMatrix2 = matrix2.toCPUMatrix();
 
-		int adds = 1000;
+//		matrix.toCPUMatrix().print();
+
+		int adds = 100;
 
 		long millis = System.currentTimeMillis();
 		for (int i = 0; i < adds; i++) {
@@ -48,6 +52,9 @@ public class NumberIDJCuda {
 		for (int i = 0; i < adds; i++) {
 			matrix.addMatrix(matrix2);
 		}
+
+		matrix.add(1).toCPUMatrix().print();
+
 		long gpuTime = (System.currentTimeMillis() - millis);
 		System.out.println("GPU: " + gpuTime);
 		System.out.printf("Improved by: %.2f%%", (double) 100 * cpuTime / gpuTime);

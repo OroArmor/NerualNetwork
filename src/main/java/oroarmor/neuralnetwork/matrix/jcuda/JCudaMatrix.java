@@ -16,6 +16,7 @@ import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.AddKernel;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.AddValueKernel;
 
 public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
@@ -35,6 +36,7 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 	int cols;
 
 	private boolean keep = false;
+	private boolean dirty = true;
 
 	public JCudaMatrix(int rows) {
 		this(rows, 1);
@@ -125,21 +127,18 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public JCudaMatrix add(double val) {
-		// TODO Auto-generated method stub
-		return null;
+		JCudaMatrix sum = new JCudaMatrix(this.rows, this.cols);
+		AddValueKernel.getInstance().add(this, val, sum);
+		dirty = true;
+		return sum;
 	}
 
 	@Override
 	public JCudaMatrix addMatrix(JCudaMatrix other) {
 		JCudaMatrix sum = new JCudaMatrix(this.rows, this.cols);
 		AddKernel.getInstance().add(this, other, sum);
+		dirty = true;
 		return sum;
-	}
-
-	@Override
-	public JCudaMatrix addOnetoEnd() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -184,14 +183,20 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public double getValue(int row, int col) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (dirty) {
+			dirty = false;
+			return this.toCPUMatrix().getValue(row, col);
+		}
+		return matrix[row * cols + col];
 	}
 
 	@Override
 	public double[] getValues() {
-		// TODO Auto-generated method stub
-		return null;
+		if (dirty) {
+			dirty = false;
+			return this.toCPUMatrix().getValues();
+		}
+		return matrix;
 	}
 
 	@Override
@@ -238,8 +243,7 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public JCudaMatrix subtract(double val) {
-		// TODO Auto-generated method stub
-		return null;
+		return add(-val);
 	}
 
 	@Override
