@@ -4,14 +4,14 @@ import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
 import oroarmor.neuralnetwork.training.models.TrainingModel;
 
-public class Trainer implements Runnable {
+public class Trainer<T extends Matrix<T>> implements Runnable {
 
-	GetData getInput;
-	GetData getOutput;
-	NeuralNetwork network;
+	GetData<T> getInput;
+	GetData<T> getOutput;
+	NeuralNetwork<T> network;
 	TrainingModel model;
 
-	public Trainer(GetData getInput, GetData getOutput, NeuralNetwork network, TrainingModel model) {
+	public Trainer(GetData<T> getInput, GetData<T> getOutput, NeuralNetwork<T> network, TrainingModel model) {
 		this.getInput = getInput;
 		this.getOutput = getOutput;
 		this.network = network;
@@ -26,35 +26,35 @@ public class Trainer implements Runnable {
 		this.model = model;
 	}
 
-	public GetData getGetInput() {
+	public GetData<T> getGetInput() {
 		return getInput;
 	}
 
-	public void setGetInput(GetData getInput) {
+	public void setGetInput(GetData<T> getInput) {
 		this.getInput = getInput;
 	}
 
-	public GetData getGetOutput() {
+	public GetData<T> getGetOutput() {
 		return getOutput;
 	}
 
-	public void setGetOutput(GetData getOutput) {
+	public void setGetOutput(GetData<T> getOutput) {
 		this.getOutput = getOutput;
 	}
 
-	public NeuralNetwork getNetwork() {
+	public NeuralNetwork<T> getNetwork() {
 		return network;
 	}
 
-	public void setNetwork(NeuralNetwork network) {
+	public void setNetwork(NeuralNetwork<T> network) {
 		this.network = network;
 	}
 
 	@Override
 	public void run() {
 		for (int i = 0; i < Integer.parseInt(getInput.globalArgs[1]); i++) {
-			Matrix input = getInput.getData(new String[] { i + "" });
-			Matrix output = getOutput.getData(new String[] { i + "" });
+			T input = getInput.getData(new String[] { i + "" });
+			T output = getOutput.getData(new String[] { i + "" });
 			network.train(input, output, model);
 		}
 	}

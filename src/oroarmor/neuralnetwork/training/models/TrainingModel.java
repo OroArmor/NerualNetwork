@@ -13,6 +13,7 @@ public abstract class TrainingModel {
 		this.trainingRate = trainingRate;
 	}
 
-	public abstract void fixErrors(ArrayList<Layer> layers, Matrix[] layerOutputs, Matrix expected, Matrix input);
+	public abstract <T extends Matrix<T>> void fixErrors(ArrayList<Layer<T>> layers, T[] layerOutputs, T expected,
+			T input);
 
 }

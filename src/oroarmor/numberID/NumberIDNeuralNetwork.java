@@ -2,8 +2,10 @@ package oroarmor.numberID;
 
 import java.io.File;
 import java.io.FileInputStream;
-import oroarmor.neuralnetwork.matrix.Matrix;
-import oroarmor.neuralnetwork.matrix.SoftMaxFunction;
+
+import oroarmor.neuralnetwork.layer.FeedFowardLayer;
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
+import oroarmor.neuralnetwork.matrix.function.SoftMaxFunction;
 import oroarmor.neuralnetwork.network.NetworkSaver;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
 import oroarmor.neuralnetwork.training.GetData;
@@ -16,24 +18,24 @@ import processing.core.PImage;
 public class NumberIDNeuralNetwork extends PApplet {
 
 	boolean reset = false;
-	NeuralNetwork numberIDNetwork;
+	NeuralNetwork<CPUMatrix> numberIDNetwork;
 	PImage randomImage;
 
 	public static void main(String[] args) {
 		PApplet.main("oroarmor.numberID.NumberIDNeuralNetwork");
 	}
 
-	public Matrix getImageData(String string) {
+	public CPUMatrix getImageData(String string) {
 		return getImageData(loadImage(string));
 	}
 
-	public Matrix getImageData(PImage image) {
+	public CPUMatrix getImageData(PImage image) {
 		image.loadPixels();
-		double[] matrixArray = new double[image.height * image.width];
-		for (int i = 0; i < matrixArray.length; i++) {
-			matrixArray[i] = (double) brightness(image.pixels[i]) / 255f;
+		double[] CPUMatrixArray = new double[image.height * image.width];
+		for (int i = 0; i < CPUMatrixArray.length; i++) {
+			CPUMatrixArray[i] = (double) brightness(image.pixels[i]) / 255f;
 		}
-		return new Matrix(matrixArray, matrixArray.length, 1);
+		return new CPUMatrix(CPUMatrixArray, CPUMatrixArray.length, 1);
 	}
 
 	@Override
@@ -45,16 +47,16 @@ public class NumberIDNeuralNetwork extends PApplet {
 	public void setup() {
 		background(0);
 		noStroke();
-		numberIDNetwork = NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\numberID\\", "numberIDNetwork.nn");
+		numberIDNetwork = NetworkSaver.<CPUMatrix>loadNetworkFromFile("C:\\oroarmor\\numberID\\", "numberIDNetwork.nn");
 
-//		if (numberIDNetwork == null || reset) {
-//			numberIDNetwork = new NeuralNetwork(28 * 28);
-//			numberIDNetwork.addLayer(new FeedFowardLayer(64));
-//			numberIDNetwork.addLayer(new FeedFowardLayer(32));
-//			numberIDNetwork.addLayer(new FeedFowardLayer(16));
-//			numberIDNetwork.addLayer(new FeedFowardLayer(16));
-//			numberIDNetwork.addLayer(new FeedFowardLayer(10));
-//		}
+		if (numberIDNetwork == null || reset) {
+			numberIDNetwork = new NeuralNetwork<CPUMatrix>(28 * 28);
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(64));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(32));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(16));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(16));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(10));
+		}
 		test();
 		train();
 		test();
@@ -92,7 +94,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 		myTest.resize(28, 28);
 		myTest.updatePixels();
 
-		Matrix outputs = numberIDNetwork.feedFoward(getImageData(myTest)).applyFunction(new SoftMaxFunction());
+		CPUMatrix outputs = numberIDNetwork.feedFoward(getImageData(myTest)).applyFunction(new SoftMaxFunction());
 
 		noStroke();
 		for (int i = 0; i < 10; i++) {
@@ -124,14 +126,15 @@ public class NumberIDNeuralNetwork extends PApplet {
 			int threads = 12;
 			Thread[] trainingThreads = new Thread[threads];
 
-			int numImages = 1000;
+			int numImages = 60000;
 
 			for (int i = 0; i < threads; i++) {
 
-				GetData getInputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+				GetData<CPUMatrix> getInputs = new GetData<CPUMatrix>(
+						new String[] { i + "", numImages / threads + "" }) {
 					@Override
-					public Matrix getData(String[] args) {
-						Matrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\train\\images\\"
+					public CPUMatrix getData(String[] args) {
+						CPUMatrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\train\\images\\"
 								+ (Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
 										+ Integer.parseInt(args[0]))
 								+ ".png"));
@@ -139,19 +142,21 @@ public class NumberIDNeuralNetwork extends PApplet {
 					}
 				};
 
-				GetData getOutputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+				GetData<CPUMatrix> getOutputs = new GetData<CPUMatrix>(
+						new String[] { i + "", numImages / threads + "" }) {
 					@Override
-					public Matrix getData(String[] args) {
+					public CPUMatrix getData(String[] args) {
 						Character trainValue = getIndex("C:\\oroarmor\\numberID\\train\\labels.txt",
 								Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
 										+ Integer.parseInt(args[0]));
-						Matrix output = new Matrix(10, 1);
+						CPUMatrix output = new CPUMatrix(10, 1);
 						output.setValue(Integer.parseInt(trainValue + ""), 0, 1);
 						return output;
 					}
 				};
 
-				Trainer trainer = new Trainer(getInputs, getOutputs, numberIDNetwork, new TotalError(0.01));
+				Trainer<CPUMatrix> trainer = new Trainer<CPUMatrix>(getInputs, getOutputs, numberIDNetwork,
+						new TotalError(0.01));
 
 				Thread thread = new Thread(trainer);
 				trainingThreads[i] = thread;
@@ -183,10 +188,10 @@ public class NumberIDNeuralNetwork extends PApplet {
 
 		for (int i = 0; i < threads; i++) {
 
-			GetData getInputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+			GetData<CPUMatrix> getInputs = new GetData<CPUMatrix>(new String[] { i + "", numImages / threads + "" }) {
 				@Override
-				public Matrix getData(String[] args) {
-					Matrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\test\\images\\"
+				public CPUMatrix getData(String[] args) {
+					CPUMatrix images = getImageData(loadImage("C:\\oroarmor\\numberID\\test\\images\\"
 							+ (Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
 									+ Integer.parseInt(args[0]))
 							+ ".png"));
@@ -194,19 +199,19 @@ public class NumberIDNeuralNetwork extends PApplet {
 				}
 			};
 
-			GetData getOutputs = new GetData(new String[] { i + "", numImages / threads + "" }) {
+			GetData<CPUMatrix> getOutputs = new GetData<CPUMatrix>(new String[] { i + "", numImages / threads + "" }) {
 				@Override
-				public Matrix getData(String[] args) {
+				public CPUMatrix getData(String[] args) {
 					Character trainValue = getIndex("C:\\oroarmor\\numberID\\test\\labels.txt",
 							Integer.parseInt(globalArgs[0]) * Integer.parseInt(globalArgs[1])
 									+ Integer.parseInt(args[0]));
-					Matrix output = new Matrix(10, 1);
+					CPUMatrix output = new CPUMatrix(10, 1);
 					output.setValue(Integer.parseInt(trainValue + ""), 0, 1);
 					return output;
 				}
 			};
 
-			Tester tester = new Tester(getInputs, getOutputs, numberIDNetwork);
+			Tester<CPUMatrix> tester = new Tester<CPUMatrix>(getInputs, getOutputs, numberIDNetwork);
 
 			Thread thread = new Thread(tester);
 			testThreads[i] = thread;

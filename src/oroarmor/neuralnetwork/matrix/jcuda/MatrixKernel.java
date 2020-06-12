@@ -1,4 +1,4 @@
-package oroarmor.neuralnetwork.matrix;
+package oroarmor.neuralnetwork.matrix.jcuda;
 
 import static jcuda.driver.JCudaDriver.cuCtxCreate;
 import static jcuda.driver.JCudaDriver.cuCtxSynchronize;
@@ -37,8 +37,7 @@ public class MatrixKernel {
 		cuModuleGetFunction(function, module, name);
 	}
 
-	public void runKernel(Pointer parameters, Dim3 gridSize, Dim3 blockSize, Pointer... output) {
-		System.out.println("Running kernel " + name);
+	public void runKernel(Pointer parameters, Dim3 gridSize, Dim3 blockSize) {
 		cuLaunchKernel(//
 				function, // Kernel Function
 				gridSize.x, gridSize.y, gridSize.z, // Grid dimension
@@ -48,8 +47,6 @@ public class MatrixKernel {
 		);
 
 		cuCtxSynchronize();
-
-		System.out.println(output);
 	}
 
 	public void checkInit() {
@@ -64,15 +61,6 @@ public class MatrixKernel {
 			JCudaDriver.setExceptionsEnabled(setExceptions);
 
 			JCuda.cudaDeviceReset();
-
-			int[] runtime = new int[1];
-			JCuda.cudaRuntimeGetVersion(runtime);
-
-			int[] driver = new int[1];
-			JCuda.cudaRuntimeGetVersion(driver);
-
-			System.out.println("Runtime=" + runtime[0]);
-			System.out.println("Driver=" + driver[0]);
 
 			// Initialize the driver and create a context for the first device.
 			cuInit(0);

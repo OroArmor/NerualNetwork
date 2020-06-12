@@ -1,4 +1,5 @@
 import oroarmor.neuralnetwork.layer.FeedFowardLayer;
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
 import oroarmor.neuralnetwork.training.models.TotalError;
@@ -21,19 +22,19 @@ public class XORProblem extends PApplet {
 	double[] output3 = { 1 };
 
 	double[] output4 = { 0 };
-	Matrix inputs1 = new Matrix(input1, 2, 1);
-	Matrix inputs2 = new Matrix(input2, 2, 1);
-	Matrix inputs3 = new Matrix(input3, 2, 1);
+	Matrix inputs1 = new CPUMatrix(input1, 2, 1);
+	Matrix inputs2 = new CPUMatrix(input2, 2, 1);
+	Matrix inputs3 = new CPUMatrix(input3, 2, 1);
 
-	Matrix inputs4 = new Matrix(input4, 2, 1);
+	Matrix inputs4 = new CPUMatrix(input4, 2, 1);
 	double[][] output = { { 0 } };
 
 	Matrix[] inputs = { inputs1, inputs2, inputs3, inputs4 };
-	Matrix outputs1 = new Matrix(output1, 1, 1);
-	Matrix outputs2 = new Matrix(output2, 1, 1);
-	Matrix outputs3 = new Matrix(output3, 1, 1);
+	Matrix outputs1 = new CPUMatrix(output1, 1, 1);
+	Matrix outputs2 = new CPUMatrix(output2, 1, 1);
+	Matrix outputs3 = new CPUMatrix(output3, 1, 1);
 
-	Matrix outputs4 = new Matrix(output4, 1, 1);
+	Matrix outputs4 = new CPUMatrix(output4, 1, 1);
 
 	Matrix[] outputs = { outputs1, outputs2, outputs3, outputs4 };
 
@@ -53,7 +54,7 @@ public class XORProblem extends PApplet {
 		for (int i = 0; i < width; i += width / res) {
 			for (int j = 0; j < height; j += height / res) {
 				double[] currentInput = { (double) i / width, (double) j / height };
-				double output = xornn.feedFoward(new Matrix(currentInput, 2, 1)).getValue(0, 0);
+				double output = xornn.feedFoward(new CPUMatrix(currentInput, 2, 1)).getValue(0, 0);
 				fill((float) output * 255);
 				rect(i, j, width / res, height / res);
 			}

@@ -1,4 +1,6 @@
-package oroarmor.neuralnetwork.matrix;
+package oroarmor.neuralnetwork.matrix.function;
+
+import oroarmor.neuralnetwork.matrix.Matrix;
 
 public class SoftMaxFunction extends MatrixFunction {
 
@@ -8,13 +10,13 @@ public class SoftMaxFunction extends MatrixFunction {
 	}
 
 	@Override
-	public Matrix applyFunction(Matrix matrix) {
-		total = matrix.collapseRows().transpose().collapseRows().getValue(0, 0);
+	public <T extends Matrix<T>> T applyFunction(T matrix) {
+		total = matrix.sum();
 		return matrix.divide(total);
 	}
 
 	@Override
-	public Matrix getDerivative(Matrix matrix) {
+	public <T extends Matrix<T>> T getDerivative(T matrix) {
 		return matrix;
 	}
 

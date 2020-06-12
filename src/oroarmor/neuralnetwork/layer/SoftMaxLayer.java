@@ -1,14 +1,14 @@
 package oroarmor.neuralnetwork.layer;
 
 import oroarmor.neuralnetwork.matrix.Matrix;
-import oroarmor.neuralnetwork.matrix.SoftMaxFunction;
+import oroarmor.neuralnetwork.matrix.function.SoftMaxFunction;
 
-public class SoftMaxLayer extends FeedFowardLayer {
+public class SoftMaxLayer<T extends Matrix<T>> extends FeedFowardLayer<T> {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 13L;
 
 	SoftMaxFunction softMax = new SoftMaxFunction();
 
@@ -17,7 +17,7 @@ public class SoftMaxLayer extends FeedFowardLayer {
 	}
 
 	@Override
-	public Matrix feedFoward(Matrix inputs) {
+	public T feedFoward(T inputs) {
 		return super.feedFoward(inputs).applyFunction(softMax);
 	}
 

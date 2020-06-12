@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import oroarmor.neuralnetwork.matrix.Matrix;
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -28,14 +28,14 @@ public class MergeImagesAndLabels extends PApplet {
 	}
 
 	@SuppressWarnings("unused")
-	public Map<Matrix, Character> mergeImagesAndLabels(String textFilePath, String imagePath, String savePath,
+	public Map<CPUMatrix, Character> mergeImagesAndLabels(String textFilePath, String imagePath, String savePath,
 			int imageAmount) {
-		Map<Matrix, Character> map = new HashMap<>();
+		Map<CPUMatrix, Character> map = new HashMap<>();
 		FileInputStream textFile = null;
 		try {
 			textFile = new FileInputStream(new File(textFilePath));
 			for (int i = 1216; i < 1217; i++) {
-				Matrix imageData = getImageData(imagePath + i + ".png");
+				CPUMatrix imageData = getImageData(imagePath + i + ".png");
 				Character value = null;
 				value = (char) textFile.read();
 				map.put(imageData, value);
@@ -49,7 +49,7 @@ public class MergeImagesAndLabels extends PApplet {
 		return map;
 	}
 
-	private Matrix getImageData(String string) {
+	private CPUMatrix getImageData(String string) {
 //		System.out.println(string);
 		PImage image = loadImage(string);
 
@@ -63,7 +63,7 @@ public class MergeImagesAndLabels extends PApplet {
 			matrixArray[i] = (double) brightness(image.pixels[i]) / 255f;
 		}
 
-		return new Matrix(matrixArray, matrixArray.length, 1);
+		return new CPUMatrix(matrixArray, matrixArray.length, 1);
 	}
 
 	@Override

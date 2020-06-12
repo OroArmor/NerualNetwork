@@ -2,24 +2,26 @@ package oroarmor.neuralnetwork.layer;
 
 import java.util.Random;
 
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
-import oroarmor.neuralnetwork.matrix.MatrixFunction;
-import oroarmor.neuralnetwork.matrix.SigmoidMatrix;
+import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
+import oroarmor.neuralnetwork.matrix.function.SigmoidMatrix;
 
-public class FeedFowardLayer extends Layer {
+@SuppressWarnings("unchecked")
+public class FeedFowardLayer<T extends Matrix<T>> extends Layer<T> {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 12L;
 
 	int neurons;
 	int previousNeurons;
-	Matrix weights;
+	T weights;
 
 	public FeedFowardLayer(int neurons) {
 		this.neurons = neurons;
 	}
 
 	@Override
-	public Matrix feedFoward(Matrix inputs) {
+	public T feedFoward(T inputs) {
 		return weights.multiplyMatrix(inputs).applyFunction(new SigmoidMatrix()); // sig(W*I)
 	}
 
@@ -34,17 +36,17 @@ public class FeedFowardLayer extends Layer {
 	}
 
 	@Override
-	public Matrix[] getParameters() {
-		return new Matrix[] { weights };
+	public T[] getParameters() {
+		return (T[]) new Matrix[] { weights };
 	}
 
 	@Override
-	public synchronized Matrix getWeights() {
+	public synchronized T getWeights() {
 		return weights;
 	}
 
 	@Override
-	public void setParameters(Matrix[] parameters) {
+	public void setParameters(T[] parameters) {
 		weights = parameters[0];
 	}
 
@@ -52,12 +54,12 @@ public class FeedFowardLayer extends Layer {
 	public void setup(int previousNeurons) {
 		this.previousNeurons = previousNeurons;
 
-		weights = Matrix.randomMatrix(neurons, previousNeurons, new Random(), -1, 1);
+		weights = (T) CPUMatrix.randomMatrix(neurons, previousNeurons, new Random(), -1, 1);
 
 	}
 
 	@Override
-	public synchronized void setWeights(Matrix newWeights) {
+	public synchronized void setWeights(T newWeights) {
 		weights = newWeights;
 	}
 

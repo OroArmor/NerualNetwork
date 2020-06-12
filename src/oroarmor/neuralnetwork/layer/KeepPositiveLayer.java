@@ -2,17 +2,19 @@ package oroarmor.neuralnetwork.layer;
 
 import java.util.Random;
 
-import oroarmor.neuralnetwork.matrix.KeepPositiveFunction;
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
-import oroarmor.neuralnetwork.matrix.MatrixFunction;
+import oroarmor.neuralnetwork.matrix.function.KeepPositiveFunction;
+import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
 
-public class KeepPositiveLayer extends Layer {
+@SuppressWarnings("unchecked")
+public class KeepPositiveLayer<T extends Matrix<T>> extends Layer<T> {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
-	public Matrix weights;
+	private static final long serialVersionUID = 11L;
+	public T weights;
 	int neurons;
 
 	public KeepPositiveLayer(int neurons) {
@@ -20,7 +22,7 @@ public class KeepPositiveLayer extends Layer {
 	}
 
 	@Override
-	public Matrix feedFoward(Matrix inputs) {
+	public T feedFoward(T inputs) {
 		return inputs.applyFunction(new KeepPositiveFunction());
 	}
 
@@ -36,19 +38,19 @@ public class KeepPositiveLayer extends Layer {
 	}
 
 	@Override
-	public Matrix[] getParameters() {
+	public T[] getParameters() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Matrix getWeights() {
+	public T getWeights() {
 		// TODO Auto-generated method stub
 		return weights;
 	}
 
 	@Override
-	public void setParameters(Matrix[] parameters) {
+	public void setParameters(T[] parameters) {
 		// TODO Auto-generated method stub
 
 	}
@@ -57,11 +59,11 @@ public class KeepPositiveLayer extends Layer {
 	public void setup(int inputs) {
 		neurons = inputs;
 
-		weights = Matrix.randomMatrix(neurons, inputs, new Random(), -1, 1);
+		weights = (T) CPUMatrix.randomMatrix(neurons, inputs, new Random(), -1, 1);
 	}
 
 	@Override
-	public void setWeights(Matrix newWeights) {
+	public void setWeights(T newWeights) {
 		weights = newWeights;
 	}
 

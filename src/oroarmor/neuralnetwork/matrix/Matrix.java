@@ -4,298 +4,79 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Random;
 
-public class Matrix implements Serializable {
+import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
 
-	// col | col
-	// row | 0 1
-	// row | 2 3
-	// row | 4 5
-	//
+public interface Matrix<T extends Matrix<T>> extends Serializable {
 
-	private static final long serialVersionUID = 1L;
+	T abs();
 
-	// A couple more constructors
-	public static Matrix randomMatrix(int rows, int cols, Random rand, double lowerBound, double upperBound) {
-		Matrix randomMatrix = new Matrix(rows, cols);
-		randomMatrix.randomize(rand, lowerBound, upperBound);
-		return randomMatrix;
-	}
-
-	// values
-	double[] matrix;
-	int rows;
-	int cols;
-
-	public Matrix(int rows) {
-		this(rows, 1);
-	}
-
-	// constructors
-	public Matrix(int rows, int cols) {
-		this.rows = rows;
-		this.cols = cols;
-
-		matrix = new double[rows * cols];
-
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				matrix[i * cols + j] = 0;
-			}
-		}
-	}
-
-	public Matrix(double[] matrixArray, int rows, int cols) {
-		matrix = matrixArray;
-		this.cols = cols;
-		this.rows = rows;
-	}
-
-	public Matrix abs() {
-		Matrix abs = new Matrix(getRows(), 1);
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				abs.setValue(i, j, Math.abs(getValue(i, j)));
-			}
-		}
-		return abs;
-	}
-
-	public Matrix add(double val) {
-		Matrix sum = new Matrix(getRows(), getCols());
-
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				double currentProduct = getValue(i, j) + val;
-				sum.setValue(i, j, currentProduct);
-			}
-		}
-
-		return sum;
-	}
+	T add(double val);
 
 	// matrix operations
-	public Matrix addMatrix(Matrix other) {
+	T addMatrix(T other);
 
-		if (other.rows != rows || other.cols != cols) {
-			throw new IllegalArgumentException("Cannot add a " + getRows() + "x" + getCols() + " and a "
-					+ other.getRows() + "x" + other.getCols() + " matrix together");
-		}
-
-		Matrix sum = new Matrix(getRows(), getCols());
-
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				double currentSum = getValue(i, j) + other.getValue(i, j);
-				sum.setValue(i, j, currentSum);
-			}
-		}
-		return sum;
-	}
-
-	public Matrix addOnetoEnd() {
-		Matrix modified = new Matrix(getRows() + 1, getCols());
-
-		for (int j = 0; j < modified.getCols(); j++) {
-			for (int i = 0; i < modified.getRows() - 1; i++) {
-				modified.setValue(i, j, getValue(i, j));
-			}
-			modified.setValue(modified.getRows() - 1, j, 1);
-		}
-
-		return modified;
-	}
+	T addOnetoEnd();
 
 	// functions
-	public Matrix applyFunction(MatrixFunction function) {
-		return function.applyFunction(this);
-	}
+	T applyFunction(MatrixFunction function);
 
-	@Override
-	public Matrix clone() {
-		Matrix duplicate = new Matrix(getRows(), getCols());
+	T clone();
 
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				duplicate.setValue(i, j, getValue(i, j));
-			}
-		}
-		return duplicate;
-	}
+	T collapseRows();
 
-	public Matrix collapseRows() {
-		Matrix collapsed = new Matrix(getRows(), 1);
+	T divide(double val);
 
-		for (int i = 0; i < getRows(); i++) {
-			double rowSum = 0;
-			for (int j = 0; j < getCols(); j++) {
-				rowSum += getValue(i, j);
-			}
-			collapsed.setValue(i, 0, rowSum);
-		}
+	int getCols();
 
-		return collapsed;
-	}
-
-	public Matrix divide(double val) {
-		if (val == 0) {
-			throw new IllegalArgumentException("Argument 'divisor' is 0");
-		}
-		return multiply(1 / val);
-	}
-
-	public int getCols() {
-		return cols;
-	}
-
-	public Matrix getDerivative(MatrixFunction function) {
-		return function.getDerivative(this);
-	}
+	T getDerivative(MatrixFunction function);
 
 	// gets and sets
-	public int getRows() {
-		return rows;
-	}
+	int getRows();
 
-	public double getValue(int row, int col) {
-		return matrix[row * getCols() + col];
-	}
+	double getValue(int row, int col);
 
-	public double[] getValues() {
-		return matrix;
-	}
+	double[] getValues();
 
-	public Matrix hadamard(Matrix other) {
-		if (getRows() != other.getRows() || getCols() != other.getCols()) {
-			throw new IllegalArgumentException("Cannot multiply a " + getRows() + "x" + getCols() + " and a "
-					+ other.getRows() + "x" + other.getCols() + " matrix together");
-		}
-		Matrix product = new Matrix(getRows(), getCols());
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				product.setValue(i, j, getValue(i, j) * other.getValue(i, j));
-			}
-		}
+	double sum();
 
-		return product;
-	}
+	T hadamard(T other);
 
 	// value operations
-	public Matrix multiply(double val) {
-		Matrix product = new Matrix(getRows(), getCols());
+	T multiply(double val);
 
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				double currentProduct = getValue(i, j) * val;
-				product.setValue(i, j, currentProduct);
-			}
-		}
+	T multiplyMatrix(T other);
 
-		return product;
-	}
+	T pow(double power);
 
-	public synchronized Matrix multiplyMatrix(Matrix other) {
-
-		if (getCols() != other.getRows()) {
-			throw new IllegalArgumentException("Cannot multiply a " + getRows() + "x" + getCols() + " and a "
-					+ other.getRows() + "x" + other.getCols() + " matrix together");
-		}
-
-		Matrix product = new Matrix(getRows(), other.getCols());
-
-		for (int i = 0; i < product.getRows(); i++) {
-			for (int j = 0; j < product.getCols(); j++) {
-				double currentVal = 0;
-
-				for (int k = 0; k < getCols(); k++) {
-					currentVal += getValue(i, k) * other.getValue(k, j);
-				}
-
-				product.setValue(i, j, currentVal);
-			}
-		}
-
-		return product;
-	}
-
-	public Matrix pow(double power) {
-		Matrix duplicate = new Matrix(getRows(), getCols());
-
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				duplicate.setValue(i, j, Math.pow(getValue(i, j), power));
-			}
-		}
-		return duplicate;
-	}
-
-	// prints
-	public Matrix print(String format) {
+	@SuppressWarnings("unchecked")
+	public default T print(String format) {
 		DecimalFormat df = new DecimalFormat(format);
+
 		for (int i = 0; i < getRows(); i++) {
 			System.out.print("| ");
 			for (int j = 0; j < getCols(); j++) {
 				System.out.print(df.format(getValue(i, j)) + " ");
 			}
-			System.out.println(" |");
+			System.out.println("|");
 		}
 		System.out.println(" ");
-		return this;
+		return (T) this;
 	}
 
-	public Matrix print() {
+	public default T print() {
 		return print("#.##");
 	}
 
-	public void randomize(Random rand, double lowerBound, double upperBound) {
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				setValue(i, j, rand.nextDouble() * (upperBound - lowerBound) + lowerBound);
-			}
-		}
-	}
+	void randomize(Random rand, double lowerBound, double upperBound);
 
-	public void setValue(int row, int col, double val) {
-		matrix[row * getCols() + col] = val;
-	}
+	void setValue(int row, int col, double val);
 
-	public Matrix subtract(double val) {
-		return add(-val);
-	}
+	T subtract(double val);
 
-	public synchronized Matrix subtractMatrix(Matrix other) {
-		Matrix sum = new Matrix(getRows(), getCols());
+	T subtractMatrix(T other);
 
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				double currentSum = getValue(i, j) - other.getValue(i, j);
-				sum.setValue(i, j, currentSum);
-			}
-		}
-		return sum;
-	}
+	T transpose();
 
-	public Matrix transpose() {
-		Matrix transposed = new Matrix(getCols(), getRows());
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				transposed.setValue(j, i, getValue(i, j));
-			}
-		}
+	int getMax();
 
-		return transposed;
-	}
-
-	public int getMax() {
-		int maxIndex = 0;
-		double max = Double.MIN_VALUE;
-
-		for (int i = 0; i < getRows(); i++) {
-			if (getValue(i, 0) > max) {
-				maxIndex = i;
-				max = getValue(i, 0);
-			}
-		}
-
-		return maxIndex;
-	}
 }

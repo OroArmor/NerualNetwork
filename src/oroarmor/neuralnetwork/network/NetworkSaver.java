@@ -6,30 +6,34 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import oroarmor.neuralnetwork.matrix.Matrix;
+
 public class NetworkSaver {
 
-	public static NeuralNetwork loadNetworkFromFile(String filePath, String fileName) {
+	@SuppressWarnings("unchecked")
+	public static <T extends Matrix<T>> NeuralNetwork<T> loadNetworkFromFile(String filePath, String fileName) {
 		ObjectInputStream oos = null;
 		FileInputStream fos = null;
 
-		NeuralNetwork nn = null;
+		NeuralNetwork<T> nn = null;
 
 		try {
 			fos = new FileInputStream(filePath + fileName);
 			oos = new ObjectInputStream(fos);
 
-			nn = (NeuralNetwork) oos.readObject();
+			nn = (NeuralNetwork<T>) oos.readObject();
 
 			fos.close();
 			oos.close();
 		} catch (Exception e) {
+			System.err.print(e);
 			return null;
-//			System.err.print(e);
+
 		}
 		return nn;
 	}
 
-	public static void saveNetworkToFile(NeuralNetwork network, String fileName, String path) {
+	public static void saveNetworkToFile(NeuralNetwork<?> network, String fileName, String path) {
 		ObjectOutputStream oos = null;
 		File networkFile = null;
 		FileOutputStream fos = null;

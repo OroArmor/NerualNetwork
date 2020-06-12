@@ -1,5 +1,6 @@
 import oroarmor.neuralnetwork.layer.FeedFowardLayer;
 import oroarmor.neuralnetwork.layer.KeepPositiveLayer;
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.network.NetworkSaver;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
@@ -24,7 +25,7 @@ public class TwoByTwoID extends PApplet {
 	@Override
 	public void draw() {
 		background(255);
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10000; i++) {
 			for (int j = 0; j < inputs.length; j++) {
 				twobytwonn.train(inputs[j], outputs[j], new TotalError(0.01));
 			}
@@ -132,8 +133,8 @@ public class TwoByTwoID extends PApplet {
 		inputs = new Matrix[8];
 		outputs = new Matrix[8];
 		for (int i = 0; i < sols.length; i++) {
-			inputs[i] = new Matrix(ins[i][0], 4, 1);
-			outputs[i] = new Matrix(sols[i], sols[i].length, 1);
+			inputs[i] = new CPUMatrix(ins[i][0], 4, 1);
+			outputs[i] = new CPUMatrix(sols[i], sols[i].length, 1);
 		}
 
 		twobytwonn = NetworkSaver.loadNetworkFromFile(System.getProperty("user.dir") + "/src/data/savedNetworks/2x2/",

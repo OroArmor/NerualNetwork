@@ -1,13 +1,17 @@
-package oroarmor.neuralnetwork.matrix;
+package oroarmor.neuralnetwork.matrix.function;
 
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
+import oroarmor.neuralnetwork.matrix.Matrix;
+
+@SuppressWarnings("unchecked")
 public class TanhMatrix extends MatrixFunction {
 
 	public TanhMatrix() {
 	}
 
 	@Override
-	public Matrix applyFunction(Matrix matrix) {
-		Matrix newMatrix = new Matrix(matrix.getRows(), matrix.getCols());
+	public <T extends Matrix<T>> T applyFunction(T matrix) {
+		T newMatrix = (T) new CPUMatrix(matrix.getRows(), matrix.getCols());
 
 		for (int i = 0; i < matrix.getRows(); i++) {
 			for (int j = 0; j < matrix.getCols(); j++) {
@@ -23,8 +27,8 @@ public class TanhMatrix extends MatrixFunction {
 	}
 
 	@Override
-	public Matrix getDerivative(Matrix matrix) {
-		Matrix newMatrix = new Matrix(matrix.getRows(), matrix.getCols());
+	public <T extends Matrix<T>> T getDerivative(T matrix) {
+		T newMatrix = (T) new CPUMatrix(matrix.getRows(), matrix.getCols());
 
 		for (int i = 0; i < matrix.getRows(); i++) {
 			for (int j = 0; j < matrix.getCols(); j++) {
