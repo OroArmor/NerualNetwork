@@ -3,7 +3,7 @@ package oroarmor.numberID;
 import jcuda.Pointer;
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.jcuda.JCudaMatrix;
-import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.MultiplyKernel;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.MatrixKernel;
 import oroarmor.neuralnetwork.util.Dim3;
 import oroarmor.neuralnetwork.util.JCudaKernel;
 
@@ -45,7 +45,7 @@ public class NumberIDJCuda {
 	}
 
 	private static void initializeMatricies() {
-		int dims = 1 << 6;
+		int dims = 1 << 2;
 
 		matrix = new JCudaMatrix(dims, dims).keep();
 		matrix2 = new JCudaMatrix(dims, dims).keep();
@@ -62,7 +62,10 @@ public class NumberIDJCuda {
 		cpuMatrix = matrix.toCPUMatrix();
 		cpuMatrix2 = matrix2.toCPUMatrix();
 
-		MultiplyKernel.getInstance();
+		MatrixKernel.initializeAllKernels();
+
+		matrix.abs().toCPUMatrix().print();
+		matrix2.toCPUMatrix().print();
 	}
 
 }

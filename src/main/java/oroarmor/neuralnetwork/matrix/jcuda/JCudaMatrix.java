@@ -15,6 +15,7 @@ import jcuda.driver.CUdeviceptr;
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.functions.AbsKernel;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.AddKernel;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.AddValueKernel;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.MultiplyKernel;
@@ -123,8 +124,10 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public JCudaMatrix abs() {
-		// TODO Auto-generated method stub
-		return null;
+		JCudaMatrix abs = new JCudaMatrix(this.rows, this.cols);
+		AbsKernel.getInstance().abs(this, abs);
+		dirty = true;
+		return abs;
 	}
 
 	@Override
