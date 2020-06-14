@@ -4,9 +4,9 @@ import oroarmor.neuralnetwork.util.JCudaKernel;
 
 public abstract class MatrixKernel extends JCudaKernel {
 
-	public MatrixKernel(String name) {
+	public MatrixKernel(String name, String subpath) {
 		super(name);
-		loadKernel("src/data/matrixKernels/" + name + ".cu");
+		loadKernel("src/data/matrixKernels/" + subpath + "/" + name + ".cu");
 	}
 
 }

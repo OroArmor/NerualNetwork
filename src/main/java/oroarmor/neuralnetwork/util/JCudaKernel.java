@@ -30,7 +30,7 @@ public class JCudaKernel {
 
 	public void loadKernel(String kernelPath) {
 		checkInit();
-		String ptxFileName = JCudaHelper.invokeNvcc(kernelPath, "ptx", true);
+		String ptxFileName = JCudaHelper.prepareDefaultCubinFile(kernelPath);
 		cuModuleLoad(module, ptxFileName);
 		cuModuleGetFunction(function, module, name);
 	}

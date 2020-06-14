@@ -1,7 +1,8 @@
-package oroarmor.neuralnetwork.matrix.jcuda.kernels;
+package oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath;
 
 import jcuda.Pointer;
 import oroarmor.neuralnetwork.matrix.jcuda.JCudaMatrix;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.MatrixKernel;
 import oroarmor.neuralnetwork.util.Dim3;
 
 public class AddKernel extends MatrixKernel {
@@ -9,7 +10,7 @@ public class AddKernel extends MatrixKernel {
 	private static AddKernel instance;
 
 	private AddKernel() {
-		super("add");
+		super("add", "simpleMath");
 	}
 
 	public void add(JCudaMatrix a, JCudaMatrix b, JCudaMatrix out) {

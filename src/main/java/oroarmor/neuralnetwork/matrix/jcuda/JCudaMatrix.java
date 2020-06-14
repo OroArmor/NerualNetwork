@@ -15,8 +15,10 @@ import jcuda.driver.CUdeviceptr;
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
-import oroarmor.neuralnetwork.matrix.jcuda.kernels.AddKernel;
-import oroarmor.neuralnetwork.matrix.jcuda.kernels.AddValueKernel;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.AddKernel;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.AddValueKernel;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.MultiplyKernel;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.MultiplyValueKernel;
 
 public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
@@ -161,8 +163,7 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public JCudaMatrix divide(double val) {
-		// TODO Auto-generated method stub
-		return null;
+		return multiply(1d / val);
 	}
 
 	@Override
@@ -213,14 +214,16 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public JCudaMatrix multiply(double val) {
-		// TODO Auto-generated method stub
-		return null;
+		JCudaMatrix product = new JCudaMatrix(this.rows, this.cols);
+		MultiplyValueKernel.getInstance().multiplyValue(this, val, product);
+		return product;
 	}
 
 	@Override
 	public JCudaMatrix multiplyMatrix(JCudaMatrix other) {
-		// TODO Auto-generated method stub
-		return null;
+		JCudaMatrix product = new JCudaMatrix(rows, other.cols);
+		MultiplyKernel.getInstance().multiply(this, other, product);
+		return product;
 	}
 
 	@Override
@@ -248,8 +251,7 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public JCudaMatrix subtractMatrix(JCudaMatrix other) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.addMatrix(other.multiply(-1));
 	}
 
 	@Override

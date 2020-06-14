@@ -1,18 +1,19 @@
-package oroarmor.neuralnetwork.matrix.jcuda.kernels;
+package oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath;
 
 import jcuda.Pointer;
 import oroarmor.neuralnetwork.matrix.jcuda.JCudaMatrix;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.MatrixKernel;
 import oroarmor.neuralnetwork.util.Dim3;
 
-public class AddValueKernel extends MatrixKernel {
+public class MultiplyValueKernel extends MatrixKernel {
 
-	private static AddValueKernel instance;
+	private static MultiplyValueKernel instance;
 
-	private AddValueKernel() {
-		super("addValue");
+	private MultiplyValueKernel() {
+		super("multiplyValue", "simpleMath");
 	}
 
-	public void add(JCudaMatrix a, double b, JCudaMatrix out) {
+	public void multiplyValue(JCudaMatrix a, double b, JCudaMatrix out) {
 		Dim3 blockSize = new Dim3(1024);
 		Dim3 gridSize = new Dim3((int) Math.ceil(a.getCols() * a.getRows() / (double) blockSize.x));
 
@@ -22,9 +23,9 @@ public class AddValueKernel extends MatrixKernel {
 		runKernel(params, gridSize, blockSize);
 	}
 
-	public static AddValueKernel getInstance() {
+	public static MultiplyValueKernel getInstance() {
 		if (instance == null) {
-			instance = new AddValueKernel();
+			instance = new MultiplyValueKernel();
 		}
 		return instance;
 	}

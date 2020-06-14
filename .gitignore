@@ -3,3 +3,5 @@
 
 *.png
 /NeuralNetwork.iml
+*.ptx
+*.cubin
