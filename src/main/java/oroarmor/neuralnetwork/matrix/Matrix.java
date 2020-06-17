@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.Random;
 
 import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
+import oroarmor.neuralnetwork.matrix.jcuda.JCudaMatrix;
 
 public interface Matrix<T extends Matrix<T>> extends Serializable {
 
@@ -17,10 +18,6 @@ public interface Matrix<T extends Matrix<T>> extends Serializable {
 
 	// functions
 	T applyFunction(MatrixFunction function);
-
-	T clone();
-
-	T collapseRows();
 
 	T divide(double val);
 
@@ -76,5 +73,39 @@ public interface Matrix<T extends Matrix<T>> extends Serializable {
 	T transpose();
 
 	int getMax();
+
+	@SuppressWarnings("unchecked")
+	public default <S extends Matrix<S>> S toMatrix(MatrixType type) {
+		switch (type) {
+			case CPU:
+				if (this instanceof CPUMatrix)
+					return (S) this;
+				if (this instanceof JCudaMatrix)
+					return (S) ((JCudaMatrix) this).toCPUMatrix();
+				break;
+			case JCuda:
+				if (this instanceof JCudaMatrix)
+					return (S) this;
+				if (this instanceof CPUMatrix)
+					return (S) (new JCudaMatrix(this.getValues(), this.getRows(), this.getCols()));
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Matrix<T>> T randomMatrix(MatrixType type, int rows, int cols, Random rand,
+			double lowerBound, double upperBound) {
+		switch (type) {
+			case CPU:
+				return (T) CPUMatrix.randomMatrix(rows, cols, rand, lowerBound, upperBound);
+			case JCuda:
+				return (T) JCudaMatrix.randomMatrix(rows, cols, rand, lowerBound, upperBound);
+		}
+		return null;
+	}
+
+	public static enum MatrixType {
+		CPU, JCuda
+	}
 
 }

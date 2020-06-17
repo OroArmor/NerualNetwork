@@ -2,6 +2,7 @@ import oroarmor.neuralnetwork.layer.FeedFowardLayer;
 import oroarmor.neuralnetwork.layer.KeepPositiveLayer;
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
+import oroarmor.neuralnetwork.matrix.Matrix.MatrixType;
 import oroarmor.neuralnetwork.network.NetworkSaver;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
 import oroarmor.neuralnetwork.training.models.TotalError;
@@ -61,20 +62,20 @@ public class TwoByTwoID extends PApplet {
 		String what = "error";
 
 		switch (index) {
-		case 0:
-			what = "solid";
-			break;
-		case 1:
-			what = "diagonal";
-			break;
-		case 2:
-			what = "horizontal";
-			break;
-		case 3:
-			what = "vertical";
-			break;
-		default:
-			println(index);
+			case 0:
+				what = "solid";
+				break;
+			case 1:
+				what = "diagonal";
+				break;
+			case 2:
+				what = "horizontal";
+				break;
+			case 3:
+				what = "vertical";
+				break;
+			default:
+				println(index);
 		}
 
 		String actual = "";
@@ -142,10 +143,10 @@ public class TwoByTwoID extends PApplet {
 
 		if (twobytwonn == null || reset) {
 			twobytwonn = new NeuralNetwork(4);
-			twobytwonn.addLayer(new FeedFowardLayer(4));
-			twobytwonn.addLayer(new FeedFowardLayer(4));
-			twobytwonn.addLayer(new KeepPositiveLayer(8));
-			twobytwonn.addLayer(new FeedFowardLayer(4));
+			twobytwonn.addLayer(new FeedFowardLayer(4, MatrixType.CPU));
+			twobytwonn.addLayer(new FeedFowardLayer(4, MatrixType.CPU));
+			twobytwonn.addLayer(new KeepPositiveLayer(8, MatrixType.CPU));
+			twobytwonn.addLayer(new FeedFowardLayer(4, MatrixType.CPU));
 		}
 		System.out.println("Feed Foward");
 		for (Matrix input : inputs) {

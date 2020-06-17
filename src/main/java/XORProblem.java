@@ -1,6 +1,7 @@
 import oroarmor.neuralnetwork.layer.FeedFowardLayer;
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
+import oroarmor.neuralnetwork.matrix.Matrix.MatrixType;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
 import oroarmor.neuralnetwork.training.models.TotalError;
 import processing.core.PApplet;
@@ -68,8 +69,8 @@ public class XORProblem extends PApplet {
 
 	@Override
 	public void setup() {
-		xornn.addLayer(new FeedFowardLayer(4));
-		xornn.addLayer(new FeedFowardLayer(1));
+		xornn.addLayer(new FeedFowardLayer(4, MatrixType.CPU));
+		xornn.addLayer(new FeedFowardLayer(1, MatrixType.CPU));
 		noStroke();
 	}
 }

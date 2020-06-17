@@ -1,6 +1,7 @@
 package oroarmor.neuralnetwork.layer;
 
 import oroarmor.neuralnetwork.matrix.Matrix;
+import oroarmor.neuralnetwork.matrix.Matrix.MatrixType;
 import oroarmor.neuralnetwork.matrix.function.SoftMaxFunction;
 
 public class SoftMaxLayer<T extends Matrix<T>> extends FeedFowardLayer<T> {
@@ -12,8 +13,8 @@ public class SoftMaxLayer<T extends Matrix<T>> extends FeedFowardLayer<T> {
 
 	SoftMaxFunction softMax = new SoftMaxFunction();
 
-	public SoftMaxLayer(int neurons) {
-		super(neurons);
+	public SoftMaxLayer(int neurons, MatrixType type) {
+		super(neurons, type);
 	}
 
 	@Override

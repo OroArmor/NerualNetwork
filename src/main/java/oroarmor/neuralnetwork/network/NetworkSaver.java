@@ -26,7 +26,6 @@ public class NetworkSaver {
 			fos.close();
 			oos.close();
 		} catch (Exception e) {
-			System.err.print(e);
 			return null;
 
 		}
@@ -44,7 +43,7 @@ public class NetworkSaver {
 			networkFile.createNewFile();
 			fos = new FileOutputStream(path + fileName);
 			oos = new ObjectOutputStream(fos);
-			oos.writeObject(network);
+			oos.writeObject(network.convertAllToCPU());
 			fos.close();
 			oos.close();
 		} catch (Exception e) {

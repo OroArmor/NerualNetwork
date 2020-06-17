@@ -18,7 +18,7 @@ public class TotalError extends TrainingModel {
 
 		T outputErrors = expectedOutput.subtractMatrix(layerOutputs[layerOutputs.length - 1]);
 
-		double totalError = outputErrors.collapseRows().transpose().collapseRows().pow(2).getValue(0, 0);
+		double totalError = Math.pow(outputErrors.sum(), 2);
 
 		T[] deltas = (T[]) new Matrix[layers.size()];
 

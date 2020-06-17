@@ -105,33 +105,6 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
 	}
 
 	@Override
-	public CPUMatrix clone() {
-		CPUMatrix duplicate = new CPUMatrix(getRows(), getCols());
-
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				duplicate.setValue(i, j, getValue(i, j));
-			}
-		}
-		return duplicate;
-	}
-
-	@Override
-	public CPUMatrix collapseRows() {
-		CPUMatrix collapsed = new CPUMatrix(getRows(), 1);
-
-		for (int i = 0; i < getRows(); i++) {
-			double rowSum = 0;
-			for (int j = 0; j < getCols(); j++) {
-				rowSum += getValue(i, j);
-			}
-			collapsed.setValue(i, 0, rowSum);
-		}
-
-		return collapsed;
-	}
-
-	@Override
 	public CPUMatrix divide(double val) {
 		if (val == 0) {
 			throw new IllegalArgumentException("Argument 'divisor' is 0");
@@ -294,7 +267,11 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
 
 	@Override
 	public double sum() {
-		return this.collapseRows().transpose().collapseRows().getValue(0, 0);
+		double sum = 0;
+		for (double d : matrix) {
+			sum += d;
+		}
+		return sum;
 	}
 
 }

@@ -16,6 +16,7 @@ import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.functions.AbsKernel;
+import oroarmor.neuralnetwork.matrix.jcuda.kernels.functions.RandomKernel;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.AddKernel;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.AddValueKernel;
 import oroarmor.neuralnetwork.matrix.jcuda.kernels.simpleMath.MultiplyKernel;
@@ -29,6 +30,11 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 	private static final long serialVersionUID = 2L;
 
 	private CUdeviceptr deviceMPtr;
+
+	public CUdeviceptr getDeviceMPtr() {
+		return deviceMPtr;
+	}
+
 	private Pointer matrixPointer, rowPointer, columnPointer, sizePointer;
 
 	private static HashMap<JCudaMatrix, Runnable> disposers = new HashMap<JCudaMatrix, Runnable>();
@@ -75,7 +81,6 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 		rowPointer = Pointer.to(new int[] { rows });
 		columnPointer = Pointer.to(new int[] { cols });
 		sizePointer = Pointer.to(new int[] { rows * cols });
-
 	}
 
 	public void createPointersNoBackingArray() {
@@ -153,18 +158,6 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 	}
 
 	@Override
-	public JCudaMatrix clone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JCudaMatrix collapseRows() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public JCudaMatrix divide(double val) {
 		return multiply(1d / val);
 	}
@@ -237,8 +230,7 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 
 	@Override
 	public void randomize(Random rand, double lowerBound, double upperBound) {
-		// TODO Auto-generated method stub
-
+		RandomKernel.getInstance().random(this, rand, lowerBound, upperBound);
 	}
 
 	@Override
@@ -267,6 +259,12 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
 	public int getMax() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public static JCudaMatrix randomMatrix(int rows, int cols, Random rand, double lowerBound, double upperBound) {
+		JCudaMatrix matrix = new JCudaMatrix(rows, cols);
+		matrix.randomize(rand, lowerBound, upperBound);
+		return matrix;
 	}
 
 }

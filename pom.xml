@@ -6,10 +6,10 @@
 	<artifactId>NeuralNetwork</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>src</directory>
+				<directory>src/data</directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
@@ -42,6 +42,11 @@
 		<dependency>
 			<groupId>org.jcuda</groupId>
 			<artifactId>jcuda</artifactId>
+			<version>10.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jcuda</groupId>
+			<artifactId>jcurand</artifactId>
 			<version>10.2.0</version>
 		</dependency>
 	</dependencies>

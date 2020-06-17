@@ -2,8 +2,10 @@ package oroarmor.neuralnetwork.network;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import oroarmor.neuralnetwork.layer.Layer;
+import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
 import oroarmor.neuralnetwork.training.models.TrainingModel;
 
@@ -60,5 +62,14 @@ public class NeuralNetwork<T extends Matrix<T>> implements Serializable {
 		}
 
 		model.fixErrors(layers, layerOutputs, output, input);
+	}
+
+	public NeuralNetwork<CPUMatrix> convertAllToCPU() {
+		NeuralNetwork<CPUMatrix> newNetwork = new NeuralNetwork<CPUMatrix>(inputs);
+		newNetwork.trains = this.trains;
+		newNetwork.layers = (ArrayList<Layer<CPUMatrix>>) layers.stream().map(Layer::contvertToCPU)
+				.collect(Collectors.toList());
+
+		return newNetwork;
 	}
 }

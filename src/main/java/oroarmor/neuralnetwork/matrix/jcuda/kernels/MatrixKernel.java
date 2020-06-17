@@ -14,14 +14,14 @@ public abstract class MatrixKernel extends JCudaKernel {
 		loadKernel("src/data/matrixKernels/" + subpath + "/" + name + ".cu");
 	}
 
-	public static void initializeAllKernels() {
+	public static void rebuildAllKernels() {
 		System.out.println("Initializing all kernels...");
 		long millis = System.currentTimeMillis();
-		AbsKernel.getInstance();
-		AddKernel.getInstance();
-		AddValueKernel.getInstance();
-		MultiplyKernel.getInstance();
-		MultiplyValueKernel.getInstance();
+		AbsKernel.getInstance().rebuildKernel();
+		AddKernel.getInstance().rebuildKernel();
+		AddValueKernel.getInstance().rebuildKernel();
+		MultiplyKernel.getInstance().rebuildKernel();
+		MultiplyValueKernel.getInstance().rebuildKernel();
 		System.out.println("All kernels initialized in " + (System.currentTimeMillis() - millis) + " milliseconds.");
 	}
 

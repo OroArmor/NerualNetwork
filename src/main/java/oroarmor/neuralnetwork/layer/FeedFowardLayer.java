@@ -4,6 +4,7 @@ import java.util.Random;
 
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
 import oroarmor.neuralnetwork.matrix.Matrix;
+import oroarmor.neuralnetwork.matrix.Matrix.MatrixType;
 import oroarmor.neuralnetwork.matrix.function.MatrixFunction;
 import oroarmor.neuralnetwork.matrix.function.SigmoidMatrix;
 
@@ -12,12 +13,11 @@ public class FeedFowardLayer<T extends Matrix<T>> extends Layer<T> {
 
 	private static final long serialVersionUID = 12L;
 
-	int neurons;
 	int previousNeurons;
 	T weights;
 
-	public FeedFowardLayer(int neurons) {
-		this.neurons = neurons;
+	public FeedFowardLayer(int neurons, MatrixType type) {
+		super(neurons, type);
 	}
 
 	@Override
@@ -54,13 +54,22 @@ public class FeedFowardLayer<T extends Matrix<T>> extends Layer<T> {
 	public void setup(int previousNeurons) {
 		this.previousNeurons = previousNeurons;
 
-		weights = (T) CPUMatrix.randomMatrix(neurons, previousNeurons, new Random(), -1, 1);
+		weights = Matrix.randomMatrix(type, neurons, previousNeurons, new Random(), -1, 1);
 
 	}
 
 	@Override
 	public synchronized void setWeights(T newWeights) {
 		weights = newWeights;
+	}
+
+	@Override
+	public Layer<CPUMatrix> contvertToCPU() {
+		FeedFowardLayer<CPUMatrix> newLayer = new FeedFowardLayer<CPUMatrix>(neurons, MatrixType.CPU);
+		newLayer.previousNeurons = previousNeurons;
+		newLayer.weights = weights.toMatrix(MatrixType.CPU);
+
+		return newLayer;
 	}
 
 }

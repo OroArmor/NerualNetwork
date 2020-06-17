@@ -2,8 +2,11 @@ package oroarmor.neuralnetwork.util;
 
 import static jcuda.driver.CUdevice_attribute.CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR;
 import static jcuda.driver.CUdevice_attribute.CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR;
+import static jcuda.driver.JCudaDriver.cuCtxCreate;
 import static jcuda.driver.JCudaDriver.cuCtxGetDevice;
+import static jcuda.driver.JCudaDriver.cuDeviceGet;
 import static jcuda.driver.JCudaDriver.cuDeviceGetAttribute;
+import static jcuda.driver.JCudaDriver.cuInit;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,8 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import jcuda.CudaException;
+import jcuda.driver.CUcontext;
 import jcuda.driver.CUdevice;
+import jcuda.driver.CUmodule;
 import jcuda.driver.CUresult;
+import jcuda.driver.JCudaDriver;
+import jcuda.runtime.JCuda;
 
 public class JCudaHelper {
 
@@ -81,9 +88,21 @@ public class JCudaHelper {
 	}
 
 	public static String prepareDefaultCubinFile(String cuFileName) {
-		int computeCapability = computeComputeCapability();
-		String nvccArguments[] = new String[] { "-dlink", "-arch=sm_" + computeCapability };
-		return invokeNvcc(cuFileName, "cubin", true, nvccArguments);
+		return invokeNvcc(cuFileName, "cubin", false,
+				new String[] { "-dlink", "-arch=sm_" + computeComputeCapability() });
+	}
+
+	public static String prepareCubinFile(String cuFileName) {
+		return invokeNvcc(cuFileName, "cubin", true,
+				new String[] { "-dlink", "-arch=sm_" + computeComputeCapability() });
+	}
+
+	public static String prepareDefaultPtxFile(String cuFileName) {
+		return invokeNvcc(cuFileName, "ptx", false);
+	}
+
+	public static String preparePtxFile(String cuFileName) {
+		return invokeNvcc(cuFileName, "ptx", true);
 	}
 
 	private static int computeComputeCapability() {
@@ -103,5 +122,24 @@ public class JCudaHelper {
 		int major = majorArray[0];
 		int minor = minorArray[0];
 		return major * 10 + minor;
+	}
+
+	static boolean INIT = false;
+	public static CUmodule module = new CUmodule();
+
+	public static void InitJCuda(boolean setExceptions) {
+		if (!INIT) {
+			JCudaDriver.setExceptionsEnabled(setExceptions);
+
+			JCuda.cudaDeviceReset();
+
+			// Initialize the driver and create a context for the first device.
+			cuInit(0);
+			CUdevice device = new CUdevice();
+			cuDeviceGet(device, 0);
+			CUcontext context = new CUcontext();
+			cuCtxCreate(context, 0, device);
+			INIT = true;
+		}
 	}
 }

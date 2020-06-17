@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 
 import oroarmor.neuralnetwork.layer.FeedFowardLayer;
 import oroarmor.neuralnetwork.matrix.CPUMatrix;
+import oroarmor.neuralnetwork.matrix.Matrix.MatrixType;
 import oroarmor.neuralnetwork.matrix.function.SoftMaxFunction;
 import oroarmor.neuralnetwork.network.NetworkSaver;
 import oroarmor.neuralnetwork.network.NeuralNetwork;
@@ -51,11 +52,11 @@ public class NumberIDNeuralNetwork extends PApplet {
 
 		if (numberIDNetwork == null || reset) {
 			numberIDNetwork = new NeuralNetwork<CPUMatrix>(28 * 28);
-			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(64));
-			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(32));
-			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(16));
-			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(16));
-			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(10));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(64, MatrixType.CPU));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(32, MatrixType.CPU));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(16, MatrixType.CPU));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(16, MatrixType.CPU));
+			numberIDNetwork.addLayer(new FeedFowardLayer<CPUMatrix>(10, MatrixType.CPU));
 		}
 		test();
 		train();
@@ -122,11 +123,11 @@ public class NumberIDNeuralNetwork extends PApplet {
 	public void train() {
 
 		long start = System.currentTimeMillis();
-		for (int repeats = 0; repeats < 10; repeats++) {
+		for (int repeats = 0; repeats < 1; repeats++) {
 			int threads = 12;
 			Thread[] trainingThreads = new Thread[threads];
 
-			int numImages = 60000;
+			int numImages = 1000;
 
 			for (int i = 0; i < threads; i++) {
 
