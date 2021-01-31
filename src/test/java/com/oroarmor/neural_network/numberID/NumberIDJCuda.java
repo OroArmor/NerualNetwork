@@ -1,70 +1,67 @@
 package com.oroarmor.neural_network.numberID;
 
-import com.oroarmor.neural_network.lib.matrix.jcuda.kernels.MatrixKernel;
+import com.oroarmor.neural_network.matrix.CPUMatrix;
+import com.oroarmor.neural_network.matrix.jcuda.JCudaMatrix;
+import com.oroarmor.neural_network.matrix.jcuda.kernels.MatrixKernel;
+import com.oroarmor.neural_network.util.Dim3;
+import com.oroarmor.neural_network.util.JCudaHelper;
+import com.oroarmor.neural_network.util.JCudaKernel;
 import jcuda.Pointer;
-import com.oroarmor.neural_network.lib.matrix.CPUMatrix;
-import com.oroarmor.neural_network.lib.matrix.jcuda.JCudaMatrix;
-import com.oroarmor.neural_network.lib.matrix.jcuda.kernels.functions.RandomKernel;
-import com.oroarmor.neural_network.lib.util.Dim3;
-import com.oroarmor.neural_network.lib.util.JCudaHelper;
-import com.oroarmor.neural_network.lib.util.JCudaKernel;
 
 public class NumberIDJCuda {
+    private static JCudaKernel testKernel;
+    private static JCudaMatrix matrix;
+    private static JCudaMatrix matrix2;
+    private static CPUMatrix cpuMatrix;
+    private static CPUMatrix cpuMatrix2;
 
-	private static JCudaKernel testKernel;
-	private static JCudaMatrix matrix;
-	private static JCudaMatrix matrix2;
-	private static CPUMatrix cpuMatrix;
-	private static CPUMatrix cpuMatrix2;
+    public static void main(String[] args) {
+        JCudaHelper.InitJCuda(true);
+        MatrixKernel.rebuildAllKernels();
+        testKernel = new JCudaKernel("test2");
+        testKernel.loadKernel("matrixKernels/test2.cu");
 
-	public static void main(String[] args) {
-		JCudaHelper.InitJCuda(true);
-		MatrixKernel.rebuildAllKernels();
-		testKernel = new JCudaKernel("test2");
-		testKernel.loadKernel("matrixKernels/test2.cu");
+        JCudaMatrix.randomMatrix(10, 10, null, 0, 10);
 
-		JCudaMatrix.randomMatrix(10, 10, null, 0, 10);
+        initializeMatrices();
+        for (int i = 1; i < 100000; i *= 10)
+            testImprovement(i);
+    }
 
-		initializeMatricies();
-		for (int i = 1; i < 100000; i *= 10)
-			testImprovement(i);
-	}
+    private static void testImprovement(int ops) {
+        long millis = System.currentTimeMillis();
+        for (int i = 0; i < ops; i++) {
+            cpuMatrix.multiplyMatrix(cpuMatrix2);
+        }
+        long cpuTime = (System.currentTimeMillis() - millis);
+        System.out.println("CPU: " + cpuTime);
 
-	private static void testImprovement(int ops) {
+        millis = System.currentTimeMillis();
+        for (int i = 0; i < ops; i++) {
+            matrix.multiplyMatrix(matrix2);
+        }
+        long gpuTime = (System.currentTimeMillis() - millis);
+        System.out.println("GPU: " + gpuTime);
 
-		long millis = System.currentTimeMillis();
-		for (int i = 0; i < ops; i++) {
-			cpuMatrix.multiplyMatrix(cpuMatrix2);
-		}
-		long cpuTime = (System.currentTimeMillis() - millis);
-		System.out.println("CPU: " + cpuTime);
+        System.out.printf("Improvement at %d ops: %.2f%%\n", ops, (double) 100 * cpuTime / gpuTime);
+    }
 
-		millis = System.currentTimeMillis();
-		for (int i = 0; i < ops; i++) {
-			matrix.multiplyMatrix(matrix2);
-		}
-		long gpuTime = (System.currentTimeMillis() - millis);
-		System.out.println("GPU: " + gpuTime);
+    private static void initializeMatrices() {
+        int dims = 1 << 6;
 
-		System.out.printf("Improvement at %d ops: %.2f%%\n", ops, (double) 100 * cpuTime / gpuTime);
-	}
+        matrix = new JCudaMatrix(dims, dims).keep();
+        matrix2 = new JCudaMatrix(dims, dims).keep();
 
-	private static void initializeMatricies() {
-		int dims = 1 << 6;
+        Dim3 blockSize = new Dim3(1024);
+        Dim3 gridSize = new Dim3((int) Math.ceil(matrix.getCols() * matrix.getRows() / (double) blockSize.x));
 
-		matrix = new JCudaMatrix(dims, dims).keep();
-		matrix2 = new JCudaMatrix(dims, dims).keep();
+        Pointer params = Pointer.to(matrix.getSizePointer(), matrix.getMatrixPointer());
+        testKernel.runKernel(params, gridSize, blockSize);
 
-		Dim3 blockSize = new Dim3(1024);
-		Dim3 gridSize = new Dim3((int) Math.ceil(matrix.getCols() * matrix.getRows() / (double) blockSize.x));
+        params = Pointer.to(matrix2.getSizePointer(), matrix2.getMatrixPointer());
+        testKernel.runKernel(params, gridSize, blockSize);
 
-		Pointer params = Pointer.to(matrix.getSizePointer(), matrix.getMatrixPointer());
-		testKernel.runKernel(params, gridSize, blockSize);
-
-		params = Pointer.to(matrix2.getSizePointer(), matrix2.getMatrixPointer());
-		testKernel.runKernel(params, gridSize, blockSize);
-
-		cpuMatrix = matrix.toCPUMatrix();
-		cpuMatrix2 = matrix2.toCPUMatrix();
-	}
+        cpuMatrix = matrix.toCPUMatrix();
+        cpuMatrix2 = matrix2.toCPUMatrix();
+    }
 }

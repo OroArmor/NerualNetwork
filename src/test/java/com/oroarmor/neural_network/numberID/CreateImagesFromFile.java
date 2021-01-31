@@ -19,9 +19,9 @@ public class CreateImagesFromFile {
 
         try {
             fos = CreateImagesFromFile.class.getClassLoader().getResourceAsStream(filePath + fileName);
-            if(fos == null) {
-            	throw new NullPointerException("Could not find resource");
-			}
+            if (fos == null) {
+                throw new NullPointerException("Could not find resource");
+            }
             int read = fos.read(imageByte);
             fos.close();
         } catch (Exception e) {
