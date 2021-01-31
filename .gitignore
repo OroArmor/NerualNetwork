@@ -5,3 +5,7 @@
 /NeuralNetwork.iml
 *.ptx
 *.cubin
+.gradle/
+/run/
+/build/
+/.idea/
