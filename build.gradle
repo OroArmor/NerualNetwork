@@ -1,8 +1,8 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-
-group = 'NeuralNetwork'
-version = '0.0.1-SNAPSHOT'
+plugins {
+    id "java"
+    id "maven-publish"
+    id 'com.jfrog.bintray' version "1.8.4"
+}
 
 description = "Simple Neural Network Library"
 
@@ -16,16 +16,110 @@ repositories {
     jcenter()
     maven { url "http://repo.maven.apache.org/maven2" }
 }
+
+def static getOsString() {
+    String vendor = System.getProperty("java.vendor")
+    if ("The Android Project" == vendor) {
+        return "android"
+    } else {
+        String osName = System.getProperty("os.name")
+        osName = osName.toLowerCase(Locale.ENGLISH)
+        if (osName.startsWith("windows")) {
+            return "windows"
+        } else if (osName.startsWith("mac os")) {
+            return "apple"
+        } else if (osName.startsWith("linux")) {
+            return "linux"
+        } else if (osName.startsWith("sun")) {
+            return "sun"
+        }
+        return "unknown"
+    }
+}
+
+def static getArchString() {
+    String osArch = System.getProperty("os.arch")
+    osArch = osArch.toLowerCase(Locale.ENGLISH)
+    if ("i386" == osArch || "x86" == osArch || "i686" == osArch) {
+        return "x86"
+    } else if (osArch.startsWith("amd64") || osArch.startsWith("x86_64")) {
+        return "x86_64"
+    } else if (osArch.startsWith("arm64")) {
+        return "arm64"
+    } else if (osArch.startsWith("arm")) {
+        return "arm"
+    } else if ("ppc" == osArch || "powerpc" == osArch) {
+        return "ppc"
+    } else if (osArch.startsWith("ppc")) {
+        return "ppc_64"
+    } else if (osArch.startsWith("sparc")) {
+        return "sparc"
+    } else if (osArch.startsWith("mips64")) {
+        return "mips64"
+    } else if (osArch.startsWith("mips")) {
+        return "mips"
+    } else if (osArch.contains("risc")) {
+        return "risc"
+    }
+    return "unknown"
+}
+
+
+def addJCudaDependecies(List<String> deps) {
+    def classifier = getOsString() + "-" + getArchString()
+    dependencies {
+        deps.each {
+            compile(group: 'org.jcuda', name: it, version: project.jcuda_version) {
+                transitive = false
+            }
+            compileOnly group: 'org.jcuda', name: "${it}-natives", classifier: classifier, version:  project.jcuda_version
+        }
+    }
+}
+
 dependencies {
-    compile 'org.processing:core:3.3.7'
-	
-	compile(group: 'org.jcuda', name: 'jcuda', version:'10.2.0') {
-		transitive = false
-	}
-    compile(group: 'org.jcuda', name: 'jcurand', version:'10.2.0') {
-		transitive = false
-	}
-	
-    compile group: 'org.jcuda', name: 'jcuda-natives', classifier: 'windows-x86_64', version:'10.2.0'
-    compile group: 'org.jcuda', name: 'jcurand-natives', classifier: 'windows-x86_64', version:'10.2.0'
+    compile "org.processing:core:${project.processing_version}"
+
+    addJCudaDependecies(["jcuda", "jcurand"])
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier "sources"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact jar
+            artifact sourceJar
+            artifact javadocJar
+
+            groupId = project.maven_group
+            artifactId = project.archives_base_name
+            version = project.version
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ["maven"]
+    publish = true
+    pkg {
+        repo = 'oroarmor'
+        name = project.archives_base_name
+        userOrg = "oroarmor"
+        licenses = ['CC0-1.0']
+        vcsUrl = 'https://github.com/OroArmor/NeuralNetwork.git'
+        version {
+            name = project.version
+        }
+    }
 }
