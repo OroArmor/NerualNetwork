@@ -3,8 +3,11 @@ package com.oroarmor.neural_network.matrix.function;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 
+/**
+ * A function that applies the sigmoid function
+ */
 @SuppressWarnings("unchecked")
-public class SigmoidMatrix extends MatrixFunction {
+public class SigmoidMatrix implements MatrixFunction {
     @Override
     public <T extends Matrix<T>> T applyFunction(T matrix) {
         T newMatrix = (T) new CPUMatrix(matrix.getRows(), matrix.getCols());
@@ -18,7 +21,7 @@ public class SigmoidMatrix extends MatrixFunction {
         return newMatrix;
     }
 
-    public double dSigmoid(double value) {
+    private double dSigmoid(double value) {
         return value * (1 - value);
     }
 
@@ -34,7 +37,7 @@ public class SigmoidMatrix extends MatrixFunction {
         return newMatrix;
     }
 
-    public double sigmoid(double value) {
+    private double sigmoid(double value) {
         return 1d / (1d + Math.pow(Math.E, -1d * value));
     }
 }

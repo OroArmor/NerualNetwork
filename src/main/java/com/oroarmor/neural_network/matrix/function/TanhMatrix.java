@@ -3,8 +3,12 @@ package com.oroarmor.neural_network.matrix.function;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 
+/**
+ * A function that applies the tanh function to a matrix
+ * @author OroArmor
+ */
 @SuppressWarnings("unchecked")
-public class TanhMatrix extends MatrixFunction {
+public class TanhMatrix implements MatrixFunction {
     @Override
     public <T extends Matrix<T>> T applyFunction(T matrix) {
         T newMatrix = (T) new CPUMatrix(matrix.getRows(), matrix.getCols());

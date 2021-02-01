@@ -5,13 +5,27 @@ import java.util.ArrayList;
 import com.oroarmor.neural_network.layer.Layer;
 import com.oroarmor.neural_network.matrix.Matrix;
 
+/**
+ * An abstract training model
+ * @author OroArmor
+ */
 public abstract class TrainingModel {
+    /**
+     * The training rate for the model
+     */
     protected double trainingRate;
 
     public TrainingModel(double trainingRate) {
         this.trainingRate = trainingRate;
     }
 
-    public abstract <T extends Matrix<T>> void fixErrors(ArrayList<Layer<T>> layers, T[] layerOutputs, T expected,
-                                                         T input);
+    /**
+     * Fixes the errors for one training step
+     * @param layers A list of the layers
+     * @param layerOutputs The outputs for the layers
+     * @param expected The expected output
+     * @param input The real output
+     * @param <T> The matrix class
+     */
+    public abstract <T extends Matrix<T>> void fixErrors(ArrayList<Layer<T>> layers, T[] layerOutputs, T expected, T input);
 }

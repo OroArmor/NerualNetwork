@@ -7,13 +7,29 @@ import com.oroarmor.neural_network.matrix.Matrix;
 import com.oroarmor.neural_network.matrix.function.MatrixFunction;
 import com.oroarmor.neural_network.matrix.function.SigmoidMatrix;
 
-@SuppressWarnings("unchecked")
+/**
+ * A Neural Network layer that feeds the inputs forward through a {@link SigmoidMatrix} function
+ * @param <T> The type of Matrix
+ * @author OroArmor
+ */
 public class FeedForwardLayer<T extends Matrix<T>> extends Layer<T> {
     private static final long serialVersionUID = 12L;
 
+    /**
+     * The previous neurons (inputs)
+     */
     protected int previousNeurons;
+
+    /**
+     * The weights for the layer (inputs by outputs)
+     */
     protected T weights;
 
+    /**
+     * Creates a new {@link FeedForwardLayer}
+     * @param neurons The number of output neurons
+     * @param type The type of matrix for the layer
+     */
     public FeedForwardLayer(int neurons, Matrix.MatrixType type) {
         super(neurons, type);
     }
@@ -34,16 +50,6 @@ public class FeedForwardLayer<T extends Matrix<T>> extends Layer<T> {
     }
 
     @Override
-    public T[] getParameters() {
-        return (T[]) new Matrix[]{weights};
-    }
-
-    @Override
-    public void setParameters(T[] parameters) {
-        weights = parameters[0];
-    }
-
-    @Override
     public synchronized T getWeights() {
         return weights;
     }
@@ -56,9 +62,7 @@ public class FeedForwardLayer<T extends Matrix<T>> extends Layer<T> {
     @Override
     public void setup(int previousNeurons) {
         this.previousNeurons = previousNeurons;
-
         weights = Matrix.randomMatrix(type, neurons, previousNeurons, new Random(), -1, 1);
-
     }
 
     @Override

@@ -5,7 +5,15 @@ import java.util.ArrayList;
 import com.oroarmor.neural_network.layer.Layer;
 import com.oroarmor.neural_network.matrix.Matrix;
 
+/**
+ * A {@link TrainingModel} using the total error from training attempts
+ * @author OroArmor
+ */
 public class TotalError extends TrainingModel {
+    /**
+     * Creates a new {@link TotalError}
+     * @param trainingRate The training rate for the model
+     */
     public TotalError(double trainingRate) {
         super(trainingRate);
     }

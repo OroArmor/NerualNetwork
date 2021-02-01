@@ -4,19 +4,41 @@ import java.util.Random;
 
 import com.oroarmor.neural_network.matrix.function.MatrixFunction;
 
+/**
+ * A Matrix that runs on the CPU
+ * @author OroArmor
+ */
 public class CPUMatrix implements Matrix<CPUMatrix> {
     private static final long serialVersionUID = 1L;
 
-    // values
+    /**
+     * The array for the matrix
+     */
     protected double[] matrix;
+
+    /**
+     * The number of rows for the matrix
+     */
     protected int rows;
+
+    /**
+     * The number of columns in the matrix
+     */
     protected int cols;
 
+    /**
+     * Creates an empty matrix (0) with rows and one column
+     * @param rows The number of rows
+     */
     public CPUMatrix(int rows) {
         this(rows, 1);
     }
 
-    // constructors
+    /**
+     * Creates an empty matrix
+     * @param rows The number of rows
+     * @param cols The number of columns
+     */
     public CPUMatrix(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
@@ -30,13 +52,31 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
         }
     }
 
+    /**
+     * Creates a new matrix with an array
+     * @param matrixArray The array for the matrix
+     * @param rows The number of rows
+     * @param cols The number of columns
+     */
     public CPUMatrix(double[] matrixArray, int rows, int cols) {
-        matrix = matrixArray;
+        if(matrixArray.length != rows * cols) {
+            throw new IllegalArgumentException("The array does not match the rows: " + rows + " and columns: " + cols);
+        }
+
+        this.matrix = matrixArray;
         this.cols = cols;
         this.rows = rows;
     }
 
-    // A couple more constructors
+    /**
+     * Returns a random CPU matrix
+     * @param rows The number of rows in the matrix
+     * @param cols The number of columns in the matrix
+     * @param rand The random number generator for the matrix. Note: this is not used to create a random GPUMatrix
+     * @param lowerBound The lower value for the random distribution
+     * @param upperBound The upper value for the random distribution
+     * @return A random matrix
+     */
     public static CPUMatrix randomMatrix(int rows, int cols, Random rand, double lowerBound, double upperBound) {
         CPUMatrix randomMatrix = new CPUMatrix(rows, cols);
         randomMatrix.randomize(rand, lowerBound, upperBound);
@@ -45,7 +85,7 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
 
     @Override
     public CPUMatrix abs() {
-        CPUMatrix abs = new CPUMatrix(getRows(), 1);
+        CPUMatrix abs = new CPUMatrix(getRows(), getCols());
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getCols(); j++) {
                 abs.setValue(i, j, Math.abs(getValue(i, j)));
@@ -68,7 +108,6 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
         return sum;
     }
 
-    // matrix operations
     @Override
     public CPUMatrix addMatrix(CPUMatrix other) {
 
@@ -88,7 +127,6 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
         return sum;
     }
 
-    // functions
     @Override
     public CPUMatrix applyFunction(MatrixFunction function) {
         return function.applyFunction(this);
@@ -112,7 +150,6 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
         return function.getDerivative(this);
     }
 
-    // gets and sets
     @Override
     public int getRows() {
         return rows;
@@ -144,7 +181,6 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
         return product;
     }
 
-    // value operations
     @Override
     public CPUMatrix multiply(double val) {
         CPUMatrix product = new CPUMatrix(getRows(), getCols());

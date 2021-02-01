@@ -21,7 +21,6 @@ public class XORProblem extends PApplet {
     CPUMatrix inputs2 = new CPUMatrix(input2, 2, 1);
     CPUMatrix inputs3 = new CPUMatrix(input3, 2, 1);
     CPUMatrix inputs4 = new CPUMatrix(input4, 2, 1);
-    double[][] output = {{0}};
     CPUMatrix[] inputs = {inputs1, inputs2, inputs3, inputs4};
     CPUMatrix outputs1 = new CPUMatrix(output1, 1, 1);
     CPUMatrix outputs2 = new CPUMatrix(output2, 1, 1);
@@ -48,7 +47,7 @@ public class XORProblem extends PApplet {
         for (int i = 0; i < width; i += width / res) {
             for (int j = 0; j < height; j += height / res) {
                 double[] currentInput = {(double) i / width, (double) j / height};
-                double output = xornn.feedFoward(new CPUMatrix(currentInput, 2, 1)).getValue(0, 0);
+                double output = xornn.feedForward(new CPUMatrix(currentInput, 2, 1)).getValue(0, 0);
                 fill((float) output * 255);
                 rect(i, j, width / res, height / res);
             }

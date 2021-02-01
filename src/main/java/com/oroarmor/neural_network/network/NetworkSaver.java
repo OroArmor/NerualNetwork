@@ -4,7 +4,18 @@ import java.io.*;
 
 import com.oroarmor.neural_network.matrix.Matrix;
 
+/**
+ * Saves and reads neural networks
+ * @author OroArmor
+ */
 public class NetworkSaver {
+    /**
+     * Reads the neural network
+     * @param filePath The path to the network file
+     * @param fileName The network file
+     * @param <T> The matrix class
+     * @return The neural network
+     */
     @SuppressWarnings("unchecked")
     public static <T extends Matrix<T>> NeuralNetwork<T> loadNetworkFromFile(String filePath, String fileName) {
         ObjectInputStream oos;
@@ -24,16 +35,22 @@ public class NetworkSaver {
         return nn;
     }
 
-    public static void saveNetworkToFile(NeuralNetwork<?> network, String fileName, String path) {
+    /**
+     * Writes the neural network to a file
+     * @param network The network
+     * @param filePath The file path
+     * @param fileName The file name
+     */
+    public static void saveNetworkToFile(NeuralNetwork<?> network, String filePath, String fileName) {
         ObjectOutputStream oos;
         File networkFile;
         FileOutputStream fos;
 
         try {
-            networkFile = new File(path);
+            networkFile = new File(filePath);
             boolean dirs = networkFile.mkdirs();
             boolean newFile = networkFile.createNewFile();
-            fos = new FileOutputStream(path + fileName);
+            fos = new FileOutputStream(filePath + fileName);
             oos = new ObjectOutputStream(fos);
             oos.writeObject(network.convertAllToCPU());
             fos.close();

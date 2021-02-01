@@ -4,56 +4,53 @@ import com.oroarmor.neural_network.matrix.Matrix;
 import com.oroarmor.neural_network.network.NeuralNetwork;
 import com.oroarmor.neural_network.training.models.TrainingModel;
 
+/**
+ * A trainer for neural networks
+ *
+ * @param <T> The matrix class
+ * @author OroArmor
+ */
 public class Trainer<T extends Matrix<T>> implements Runnable {
-    protected GetData<T> getInput;
-    protected GetData<T> getOutput;
+    /**
+     * The input provider
+     */
+    protected DataProvider<T> getInput;
+
+    /**
+     * The output provider
+     */
+    protected DataProvider<T> getOutput;
+
+    /**
+     * The network
+     */
     protected NeuralNetwork<T> network;
+
+    /**
+     * The training model
+     */
     protected TrainingModel model;
 
-    public Trainer(GetData<T> getInput, GetData<T> getOutput, NeuralNetwork<T> network, TrainingModel model) {
+    /**
+     * Creates a new {@link Trainer}
+     *
+     * @param getInput  The input provider
+     * @param getOutput The output provider
+     * @param network   The network
+     * @param model     The training model
+     */
+    public Trainer(DataProvider<T> getInput, DataProvider<T> getOutput, NeuralNetwork<T> network, TrainingModel model) {
         this.getInput = getInput;
         this.getOutput = getOutput;
         this.network = network;
         this.model = model;
-    }
-
-    public TrainingModel getModel() {
-        return model;
-    }
-
-    public void setModel(TrainingModel model) {
-        this.model = model;
-    }
-
-    public GetData<T> getGetInput() {
-        return getInput;
-    }
-
-    public void setGetInput(GetData<T> getInput) {
-        this.getInput = getInput;
-    }
-
-    public GetData<T> getGetOutput() {
-        return getOutput;
-    }
-
-    public void setGetOutput(GetData<T> getOutput) {
-        this.getOutput = getOutput;
-    }
-
-    public NeuralNetwork<T> getNetwork() {
-        return network;
-    }
-
-    public void setNetwork(NeuralNetwork<T> network) {
-        this.network = network;
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < Integer.parseInt(getInput.globalArgs[1]); i++) {
-            T input = getInput.getData(new String[]{i + ""});
-            T output = getOutput.getData(new String[]{i + ""});
+        for (int i = 0; i < (Integer) getInput.globalArgs[1]; i++) {
+            T input = getInput.getData(new Object[]{i});
+            T output = getOutput.getData(new Object[]{i});
             network.train(input, output, model);
         }
     }

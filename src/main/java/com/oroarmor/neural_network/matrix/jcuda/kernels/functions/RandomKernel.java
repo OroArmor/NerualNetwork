@@ -10,6 +10,10 @@ import jcuda.jcurand.curandGenerator;
 import static jcuda.jcurand.JCurand.*;
 import static jcuda.jcurand.curandRngType.CURAND_RNG_PSEUDO_DEFAULT;
 
+/**
+ * A matrix kernel that puts random values into a matrix
+ * @author OroArmor
+ */
 public class RandomKernel extends MatrixKernel {
     private static RandomKernel instance;
     private static curandGenerator generator;
@@ -31,6 +35,14 @@ public class RandomKernel extends MatrixKernel {
         return instance;
     }
 
+    /**
+     * Puts random values from min to max in out
+     *
+     * @param out    The output matrix
+     * @param random The random number generator to set the seed
+     * @param min    The minimum value
+     * @param max    The maximum value
+     */
     public void random(JCudaMatrix out, Random random, double min, double max) {
         if (random != null) {
             curandSetPseudoRandomGeneratorSeed(generator, random.nextLong());

@@ -3,8 +3,12 @@ package com.oroarmor.neural_network.matrix.function;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 
+/**
+ * A function that keeps only the positive values of a matrix
+ * @author OroArmor
+ */
 @SuppressWarnings("unchecked")
-public class KeepPositiveFunction extends MatrixFunction {
+public class KeepPositiveFunction implements MatrixFunction {
     @Override
     public <T extends Matrix<T>> T applyFunction(T matrix) {
         T newMatrix = (T) new CPUMatrix(matrix.getRows(), matrix.getCols());
@@ -44,5 +48,4 @@ public class KeepPositiveFunction extends MatrixFunction {
         }
         return 0;
     }
-
 }

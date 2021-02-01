@@ -19,23 +19,61 @@ import jcuda.driver.CUdeviceptr;
 
 import static jcuda.driver.JCudaDriver.*;
 
+/**
+ * A Matrix that runs on the GPU
+ * @author OroArmor
+ */
 public class JCudaMatrix implements Matrix<JCudaMatrix> {
     private static final long serialVersionUID = 2L;
+    /**
+     * A map of the disposers to dispose extra gpu data to save on memory
+     */
     private static final HashMap<JCudaMatrix, Runnable> disposers = new HashMap<>();
 
     // values
+    /**
+     * The array for the matrix
+     */
     protected double[] matrix;
+    /**
+     * The rows for the matrix
+     */
     protected int rows;
+    /**
+     * The columns for the matrix
+     */
     protected int cols;
+    /**
+     * The pointer to the device matrix
+     */
     protected CUdeviceptr deviceMPtr;
+    /**
+     * The pointers for the properties of the matrix
+     */
     protected Pointer matrixPointer, rowPointer, columnPointer, sizePointer;
+    /**
+     * True if the matrix should not be disposed
+     */
     protected boolean keep = false;
+
+    /**
+     * True if any changing operation has been run
+     */
     protected boolean dirty = true;
 
+    /**
+     * Creates an empty matrix (0) with rows and one column
+     * @param rows The number of rows
+     */
     public JCudaMatrix(int rows) {
         this(rows, 1);
     }
 
+    /**
+     * Creates an empty matrix
+     * @param rows The number of rows
+     * @param cols The number of columns
+     */
     public JCudaMatrix(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
@@ -45,6 +83,12 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
         disposers.put(this, this::dispose);
     }
 
+    /**
+     * Creates a new matrix with an array
+     * @param matrixArray The array for the matrix
+     * @param rows The number of rows
+     * @param cols The number of columns
+     */
     public JCudaMatrix(double[] matrixArray, int rows, int cols) {
         matrix = matrixArray;
         this.rows = rows;
@@ -55,16 +99,32 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
         disposers.put(this, this::dispose);
     }
 
+    /**
+     * Returns a random GPU matrix
+     * @param rows The number of rows in the matrix
+     * @param cols The number of columns in the matrix
+     * @param rand The random number generator for the matrix. Note: this is not used to create a random GPUMatrix
+     * @param lowerBound The lower value for the random distribution
+     * @param upperBound The upper value for the random distribution
+     * @return A random matrix
+     */
     public static JCudaMatrix randomMatrix(int rows, int cols, Random rand, double lowerBound, double upperBound) {
         JCudaMatrix matrix = new JCudaMatrix(rows, cols);
         matrix.randomize(rand, lowerBound, upperBound);
         return matrix;
     }
 
+    /**
+     *
+     * @return The device matrix pointer
+     */
     public CUdeviceptr getDeviceMPtr() {
         return deviceMPtr;
     }
 
+    /**
+     * Creates the pointers with an array
+     */
     public void createPointers() {
         int matrixByteSize = rows * cols * Sizeof.DOUBLE;
 
@@ -78,6 +138,9 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
         sizePointer = Pointer.to(new int[]{rows * cols});
     }
 
+    /**
+     * Creates the pointers without an array
+     */
     public void createPointersNoBackingArray() {
         int matrixByteSize = rows * cols * Sizeof.DOUBLE;
 
@@ -90,22 +153,42 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
         sizePointer = Pointer.to(new int[]{rows * cols});
     }
 
+    /**
+     *
+     * @return The pointer to the matrix
+     */
     public Pointer getMatrixPointer() {
         return matrixPointer;
     }
 
+    /**
+     *
+     * @return The pointer for the rows
+     */
     public Pointer getRowPointer() {
         return rowPointer;
     }
 
+    /**
+     *
+     * @return The pointer for the columns
+     */
     public Pointer getColumnPointer() {
         return columnPointer;
     }
 
+    /**
+     *
+     * @return The pointer for the size of the matrix
+     */
     public Pointer getSizePointer() {
         return sizePointer;
     }
 
+    /**
+     * Copies the data from the GPU to the CPU
+     * @return A {@link CPUMatrix} with the same data as this
+     */
     public CPUMatrix toCPUMatrix() {
         matrix = new double[rows * cols];
         cuMemcpyDtoH(Pointer.to(matrix), deviceMPtr, rows * cols * Sizeof.DOUBLE);
@@ -113,10 +196,17 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
         return new CPUMatrix(matrix, rows, cols);
     }
 
+    /**
+     * Disposes the data on the gpu
+     */
     public void dispose() {
         cuMemFree(deviceMPtr);
     }
 
+    /**
+     * Make sure the data is not disposed
+     * @return this
+     */
     public JCudaMatrix keep() {
         keep = true;
         return this;

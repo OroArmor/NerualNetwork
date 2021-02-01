@@ -5,11 +5,14 @@ import com.oroarmor.neural_network.matrix.jcuda.kernels.MatrixKernel;
 import com.oroarmor.neural_network.util.Dim3;
 import jcuda.Pointer;
 
+/**
+ * Multiplies two matrices together
+ */
 public class MultiplyKernel extends MatrixKernel {
     private static MultiplyKernel instance;
 
     private MultiplyKernel() {
-        super("multiply", "simpleMath");
+        super("multiply", "simple_math");
     }
 
     public static MultiplyKernel getInstance() {
@@ -19,6 +22,12 @@ public class MultiplyKernel extends MatrixKernel {
         return instance;
     }
 
+    /**
+     * Multiplies a and b into out
+     * @param a Matrix a
+     * @param b Matrix b
+     * @param out Output
+     */
     public void multiply(JCudaMatrix a, JCudaMatrix b, JCudaMatrix out) {
         Dim3 blockSize = new Dim3(16, 64);
         Dim3 gridSize = new Dim3((b.getCols() + blockSize.x - 1) / blockSize.x,

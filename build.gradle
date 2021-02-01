@@ -78,9 +78,21 @@ def addJCudaDependecies(List<String> deps) {
 }
 
 dependencies {
-    compile "org.processing:core:${project.processing_version}"
+    testCompile "org.processing:core:${project.processing_version}"
 
     addJCudaDependecies(["jcuda", "jcurand"])
+}
+
+task testJar(type: Jar) {
+    dependsOn(jar)
+    from sourceSets.test.compileClasspath
+    classifier "test"
+}
+
+task runJCuda(type: JavaExec) {
+    dependsOn(testJar)
+    classpath =  sourceSets.test.runtimeClasspath
+    mainClass = "com.oroarmor.neural_network.numberID.NumberIDJCuda"
 }
 
 task sourceJar(type: Jar) {

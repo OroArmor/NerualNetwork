@@ -34,12 +34,12 @@ public class TwoByTwoID extends PApplet {
             }
         }
         fill(0);
-        text(twobytwonn.getTrainingAttemps(), 200, 380);
+        text(twobytwonn.getTrainingAttempts(), 200, 380);
     }
 
     void drawInputs(CPUMatrix inputs, int x, int y, int w, int h, int oIndex) {
 
-        CPUMatrix outputs = twobytwonn.feedFoward(inputs);
+        CPUMatrix outputs = twobytwonn.feedForward(inputs);
         pushMatrix();
         translate(x + w / 2f, y + h / 4f);
         scale(0.8f);
@@ -147,7 +147,7 @@ public class TwoByTwoID extends PApplet {
         }
         System.out.println("Feed Foward");
         for (CPUMatrix input : inputs) {
-            twobytwonn.feedFoward(input);
+            twobytwonn.feedForward(input);
         }
 //		noStroke();
         textAlign(CENTER, CENTER);
@@ -162,8 +162,8 @@ public class TwoByTwoID extends PApplet {
         }
 
         public void dispose() {
-            NetworkSaver.saveNetworkToFile(twobytwonn, "twoXtwonn.nn",
-                    System.getProperty("user.dir") + "/run/2x2/");
+            NetworkSaver.saveNetworkToFile(twobytwonn, System.getProperty("user.dir") + "/run/2x2/", "twoXtwonn.nn"
+            );
             System.out.println("Network Saved");
 
         }

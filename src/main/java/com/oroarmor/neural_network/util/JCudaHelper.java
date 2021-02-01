@@ -10,10 +10,29 @@ import static jcuda.driver.CUdevice_attribute.CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABI
 import static jcuda.driver.CUdevice_attribute.CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR;
 import static jcuda.driver.JCudaDriver.*;
 
+/**
+ * A helper with JCuda features
+ * @author OroArmor
+ */
 public class JCudaHelper {
+    /**
+     * The cuda module
+     */
     public static CUmodule module = new CUmodule();
-    static boolean INIT = false;
 
+    /**
+     * True if JCuda has been initialized
+     */
+    protected static boolean INIT = false;
+
+    /**
+     * Invokes the nvcc compiler on the cuFileName
+     * @param cuFileName The file
+     * @param targetFileType The target type
+     * @param forceRebuild Force the rebuild of the file
+     * @param nvccArguments Extra nvcc arguments
+     * @return The output file name
+     */
     public static String invokeNvcc(String cuFileName, String targetFileType, boolean forceRebuild,
                                     String... nvccArguments) {
         if (!"cubin".equalsIgnoreCase(targetFileType) && !"ptx".equalsIgnoreCase(targetFileType)) {
@@ -45,10 +64,9 @@ public class JCudaHelper {
         command.append("\"").append(cuFileName).append("\" -o \"").append(outputFileName).append("\"");
 
         try {
-            System.out.println(command);
             Process process = Runtime.getRuntime().exec(command.toString());
 
-            String errorMessage = new String(toByteArray(process.getErrorStream()));
+            String errorMessage = new String(process.getErrorStream().readAllBytes());
             int exitValue;
             try {
                 exitValue = process.waitFor();
@@ -66,19 +84,11 @@ public class JCudaHelper {
         return outputFileName;
     }
 
-    private static byte[] toByteArray(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[8192];
-        while (true) {
-            int read = inputStream.read(buffer);
-            if (read == -1) {
-                break;
-            }
-            baos.write(buffer, 0, read);
-        }
-        return baos.toByteArray();
-    }
-
+    /**
+     * Prepares a cubin file for the input
+     * @param cuFileName The cu file
+     * @return The output file name
+     */
     public static String prepareDefaultCubinFile(String cuFileName) {
         String kernelData;
         boolean rebuild = false;
@@ -108,7 +118,6 @@ public class JCudaHelper {
             }
         } catch (Exception e) {
             e.printStackTrace();
-//			throw new Exception("Unable to save " + cuFileName +  " to C:\\com.oroarmor.neural_network.oroarmor\\" + cuFileName);
         }
 
         String result;
@@ -121,19 +130,33 @@ public class JCudaHelper {
         return result;
     }
 
-    public static String prepareCubinFile(String cuFileName) {
+    private static String prepareCubinFile(String cuFileName) {
         return invokeNvcc(cuFileName, "cubin", true,
                 "-dlink", "-arch=sm_" + computeComputeCapability());
     }
 
+    /**
+     * Creates a new ptx file only if the output does not exist already
+     * @param cuFileName The input file
+     * @return the output file name
+     */
     public static String prepareDefaultPtxFile(String cuFileName) {
         return invokeNvcc(cuFileName, "ptx", false);
     }
 
+    /**
+     * Creates a new ptx file only
+     * @param cuFileName The input file
+     * @return the output file name
+     */
     public static String preparePtxFile(String cuFileName) {
         return invokeNvcc(cuFileName, "ptx", true);
     }
 
+    /**
+     * Computes the capability of the current device
+     * @return The compute capability
+     */
     private static int computeComputeCapability() {
         CUdevice device = new CUdevice();
         int status = cuCtxGetDevice(device);
@@ -143,6 +166,11 @@ public class JCudaHelper {
         return computeComputeCapability(device);
     }
 
+    /**
+     * Computes the capability of the current device
+     * @param device The cuda device
+     * @return The compute capability
+     */
     private static int computeComputeCapability(CUdevice device) {
         int[] majorArray = {0};
         int[] minorArray = {0};
@@ -153,6 +181,10 @@ public class JCudaHelper {
         return major * 10 + minor;
     }
 
+    /**
+     * Initialize JCuda. This must be run before any other JCuda features are run
+     * @param setExceptions True if exceptions are to be thrown
+     */
     public static void InitJCuda(boolean setExceptions) {
         if (!INIT) {
             JCudaDriver.setExceptionsEnabled(setExceptions);
