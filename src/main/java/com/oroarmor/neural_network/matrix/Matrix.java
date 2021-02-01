@@ -201,7 +201,7 @@ public interface Matrix<T extends Matrix<T>> extends Serializable {
     T subtractMatrix(T other);
 
     /**
-     * Transposes the matrix (rows -> cols and cols -> rows)
+     * Transposes the matrix (rows -&gt; cols and cols -&gt; rows)
      * @return The transposed matrix
      */
     T transpose();
