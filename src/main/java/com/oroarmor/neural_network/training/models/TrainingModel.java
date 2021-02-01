@@ -1,6 +1,7 @@
 package com.oroarmor.neural_network.training.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.oroarmor.neural_network.layer.Layer;
 import com.oroarmor.neural_network.matrix.Matrix;
@@ -27,5 +28,5 @@ public abstract class TrainingModel {
      * @param input The real output
      * @param <T> The matrix class
      */
-    public abstract <T extends Matrix<T>> void fixErrors(ArrayList<Layer<T>> layers, T[] layerOutputs, T expected, T input);
+    public abstract <T extends Matrix<T>> void fixErrors(List<Layer<T>> layers, T[] layerOutputs, T expected, T input);
 }

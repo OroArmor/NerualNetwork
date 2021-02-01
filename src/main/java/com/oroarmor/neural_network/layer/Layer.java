@@ -76,4 +76,6 @@ public abstract class Layer<T extends Matrix<T>> implements Serializable {
      * @return A new layer for CPU only calculation
      */
     public abstract Layer<CPUMatrix> convertToCPU();
+
+    public abstract T backPropagate(T errors);
 }

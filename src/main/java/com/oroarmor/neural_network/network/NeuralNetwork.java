@@ -14,51 +14,17 @@ import com.oroarmor.neural_network.training.models.TrainingModel;
  * @param <T> The matrix type
  * @author OroArmor
  */
-public class NeuralNetwork<T extends Matrix<T>> implements Serializable {
+public class NeuralNetwork<T extends Matrix<T>> extends AbstractNetwork<T> implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The layers for the network
-     */
-    protected ArrayList<Layer<T>> layers;
-
-    /**
-     * The number of inputs for the network
-     */
-    protected int inputs;
-
-    /**
-     * The number of training attempts on the network
-     */
-    protected int trains;
 
     /**
      * Creates a new network with the given inputs
      * @param inputNeurons The number of inputs
      */
     public NeuralNetwork(int inputNeurons) {
-        inputs = inputNeurons;
-        layers = new ArrayList<>();
+        super(inputNeurons, new ArrayList<>());
     }
 
-    /**
-     * Adds a layer to the network
-     * @param layer The new layer
-     */
-    public void addLayer(Layer<T> layer) {
-        if (layers.isEmpty()) {
-            layer.setup(inputs);
-        } else {
-            layer.setup(layers.get(layers.size() - 1).getOutputNeurons());
-        }
-        layers.add(layer);
-    }
-
-    /**
-     * Feeds the inputs through all layers
-     * @param inputs The inputs
-     * @return The output
-     */
     public T feedForward(T inputs) {
         for (Layer<T> layer : layers) {
             inputs = layer.feedForward(inputs);
@@ -66,29 +32,7 @@ public class NeuralNetwork<T extends Matrix<T>> implements Serializable {
         return inputs;
     }
 
-    /**
-     *
-     * @param layerIndex The index
-     * @return The layer at the index
-     */
-    public Layer<T> getLayer(int layerIndex) {
-        return layers.get(layerIndex);
-    }
 
-    /**
-     *
-     * @return The number of training attempts
-     */
-    public int getTrainingAttempts() {
-        return trains;
-    }
-
-    /**
-     * Trains the network once
-     * @param input The input matrix
-     * @param output The output matrix
-     * @param model The training model
-     */
     @SuppressWarnings("unchecked")
     public synchronized void train(T input, T output, TrainingModel model) {
         trains++;
@@ -108,14 +52,10 @@ public class NeuralNetwork<T extends Matrix<T>> implements Serializable {
         model.fixErrors(layers, layerOutputs, output, input);
     }
 
-    /**
-     * Converts the neural network to completely CPU based
-     * @return A CPU neural network
-     */
     public NeuralNetwork<CPUMatrix> convertAllToCPU() {
         NeuralNetwork<CPUMatrix> newNetwork = new NeuralNetwork<>(inputs);
         newNetwork.trains = this.trains;
-        newNetwork.layers = (ArrayList<Layer<CPUMatrix>>) layers.stream().map(Layer::convertToCPU)
+        newNetwork.layers = layers.stream().map(Layer::convertToCPU)
                 .collect(Collectors.toList());
 
         return newNetwork;

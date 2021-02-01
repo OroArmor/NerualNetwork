@@ -62,4 +62,9 @@ public class KeepPositiveLayer<T extends Matrix<T>> extends Layer<T> {
     public Layer<CPUMatrix> convertToCPU() {
         return new KeepPositiveLayer<>(neurons, Matrix.MatrixType.CPU);
     }
+
+    @Override
+    public T backPropagate(T errors) {
+        return null;
+    }
 }

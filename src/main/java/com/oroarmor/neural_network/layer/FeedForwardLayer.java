@@ -72,4 +72,9 @@ public class FeedForwardLayer<T extends Matrix<T>> extends Layer<T> {
         newLayer.weights = weights.toMatrix(Matrix.MatrixType.CPU);
         return newLayer;
     }
+
+    @Override
+    public T backPropagate(T errors) {
+        return null;
+    }
 }

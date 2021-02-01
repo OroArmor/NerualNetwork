@@ -1,6 +1,7 @@
 package com.oroarmor.neural_network.training.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.oroarmor.neural_network.layer.Layer;
 import com.oroarmor.neural_network.matrix.Matrix;
@@ -20,7 +21,7 @@ public class TotalError extends TrainingModel {
 
     @SuppressWarnings("unchecked")
     @Override
-    public synchronized <T extends Matrix<T>> void fixErrors(ArrayList<Layer<T>> layers, T[] layerOutputs,
+    public synchronized <T extends Matrix<T>> void fixErrors(List<Layer<T>> layers, T[] layerOutputs,
                                                              T expectedOutput, T inputs) {
         T outputErrors = expectedOutput.subtractMatrix(layerOutputs[layerOutputs.length - 1]);
 
