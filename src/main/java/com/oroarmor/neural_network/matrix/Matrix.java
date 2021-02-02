@@ -208,9 +208,9 @@ public interface Matrix<T extends Matrix<T>> extends Serializable {
 
     /**
      *
-     * @return The maximum value in the matrix
+     * @return The maximum index in the matrix
      */
-    int getMax();
+    int getMaxIndex();
 
     /**
      * Converts this matrix to a different type

@@ -2,8 +2,10 @@ package com.oroarmor.neural_network.numberID;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.DecimalFormat;
 
 import com.oroarmor.neural_network.layer.FeedForwardLayer;
+import com.oroarmor.neural_network.layer.SoftMaxLayer;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix.MatrixType;
 import com.oroarmor.neural_network.matrix.function.SoftMaxFunction;
@@ -14,6 +16,7 @@ import com.oroarmor.neural_network.training.Tester;
 import com.oroarmor.neural_network.training.Trainer;
 import com.oroarmor.neural_network.training.models.TotalError;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 public class NumberIDNeuralNetwork extends PApplet {
@@ -39,14 +42,14 @@ public class NumberIDNeuralNetwork extends PApplet {
 
     @Override
     public void settings() {
-        size(280, 400);
+        size(280 * 2, 400);
     }
 
     @Override
     public void setup() {
         background(0);
         noStroke();
-        numberIDNetwork = NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\numberID\\", "numberIDNetwork.nn");
+        numberIDNetwork = NetworkSaver.loadNetworkFromFile("C:\\oroarmor\\numberID\\", "numberIDNetwork.nn", NeuralNetwork.class);
 
         if (numberIDNetwork == null || reset) {
             numberIDNetwork = new NeuralNetwork<>(28 * 28);
@@ -58,12 +61,11 @@ public class NumberIDNeuralNetwork extends PApplet {
         }
         test();
         train();
-        test();
     }
 
     @Override
     public void draw() {
-        if (mousePressed) {
+        if (mousePressed && mouseX < 280) {
             stroke(255, 255 / 2f);
             for (int i = 0; i < 5; i++) {
                 strokeWeight(25 - i * 5);
@@ -71,26 +73,33 @@ public class NumberIDNeuralNetwork extends PApplet {
             }
         }
         fill(255);
+
         noStroke();
-        rect(0, 280, 280, 120);
+        rect(0, 280, 280 * 2, 120);
 
         PImage myTest = new PImage(280, 280);
         myTest.loadPixels();
 
-        myTest.copy(g.copy(), 0, 0, 280, 280, 0, 0, 280, 280);
+        myTest.blend(g.copy(), 0, 0, 280, 280, 0, 0, 280, 280, PConstants.ADD);
 
         myTest.resize(28, 28);
         myTest.updatePixels();
 
-        CPUMatrix outputs = numberIDNetwork.feedForward(getImageData(myTest)).applyFunction(new SoftMaxFunction());
+        image(myTest, 280, 0, 280, 280);
 
+        stroke(255);
+        strokeWeight(1);
+        line(280, 0, 280, 280);
+        noStroke();
+
+        CPUMatrix outputs = numberIDNetwork.feedForward(getImageData(myTest)).applyFunction(new SoftMaxFunction());
         noStroke();
         for (int i = 0; i < 10; i++) {
             fill((float) (1 - outputs.getValue(i, 0)) * 255f, (float) outputs.getValue(i, 0) * 255f, 0);
-            rect(i * 280 / 10f, 280, 28, 120);
+            rect(i * 2 * 280 / 10f, 280, 28 * 2, 120);
 
             fill(0);
-            text(i + ": \n" + outputs.getValue(i, 0), i * 28, 300);
+            text(i + ": \n" + outputs.getValue(i, 0), i * 28 * 2, 300);
         }
     }
 
@@ -103,7 +112,7 @@ public class NumberIDNeuralNetwork extends PApplet {
 
     public void train() {
         long start = System.currentTimeMillis();
-        for (int repeats = 0; repeats < 1; repeats++) {
+        for (int repeats = 0; repeats < 16; repeats++) {
             int threads = 12;
             Thread[] trainingThreads = new Thread[threads];
 
@@ -147,6 +156,7 @@ public class NumberIDNeuralNetwork extends PApplet {
                 e.printStackTrace();
             }
             System.out.println(repeats + " " + (System.currentTimeMillis() - start) / (1000f * (repeats + 1)));
+            test();
         }
         System.out.println(numberIDNetwork.getTrainingAttempts());
         System.out.println((System.currentTimeMillis() - start) / 1000f + " total seconds");
@@ -158,11 +168,12 @@ public class NumberIDNeuralNetwork extends PApplet {
         int threads = 8;
         Thread[] testThreads = new Thread[threads];
 
-        int numImages = 10000;
+        double numImages = 10000;
+        DecimalFormat format = new DecimalFormat("#.##");
 
         for (int i = 0; i < threads; i++) {
 
-            DataProvider<CPUMatrix> getInputs = new DataProvider<>(new Object[]{i, numImages / threads}) {
+            DataProvider<CPUMatrix> getInputs = new DataProvider<>(new Object[]{i, (int)numImages / threads}) {
                 @Override
                 public CPUMatrix getData(Object[] args) {
                     return getImageData(loadImage("C:\\oroarmor\\numberID\\test\\images\\"
@@ -172,7 +183,7 @@ public class NumberIDNeuralNetwork extends PApplet {
                 }
             };
 
-            DataProvider<CPUMatrix> getOutputs = new DataProvider<>(new Object[]{i, numImages / threads}) {
+            DataProvider<CPUMatrix> getOutputs = new DataProvider<>(new Object[]{i, (int)numImages / threads}) {
                 @Override
                 public CPUMatrix getData(Object[] args) {
                     Character trainValue = getIndex("C:\\oroarmor\\numberID\\test\\labels.txt",
@@ -183,7 +194,7 @@ public class NumberIDNeuralNetwork extends PApplet {
                 }
             };
 
-            Tester<CPUMatrix> tester = new Tester<>(getInputs, getOutputs, numberIDNetwork);
+            Tester<CPUMatrix> tester = new Tester<>(getInputs, getOutputs, numberIDNetwork, 0.5);
 
             Thread thread = new Thread(tester);
             testThreads[i] = thread;
@@ -199,7 +210,7 @@ public class NumberIDNeuralNetwork extends PApplet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(Tester.numCorrect);
+        System.out.println(format.format(Tester.numCorrect / numImages * 100) + "%");
     }
 
     public Character getIndex(String textFilePath, int index) {

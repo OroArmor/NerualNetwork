@@ -3,13 +3,14 @@ package com.oroarmor.neural_network.matrix;
 import java.util.Random;
 
 import com.oroarmor.neural_network.matrix.function.MatrixFunction;
+import com.oroarmor.neural_network.util.SerializationIndexer;
 
 /**
  * A Matrix that runs on the CPU
  * @author OroArmor
  */
 public class CPUMatrix implements Matrix<CPUMatrix> {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerializationIndexer.CPU_MATRIX_ID;
 
     /**
      * The array for the matrix
@@ -276,7 +277,7 @@ public class CPUMatrix implements Matrix<CPUMatrix> {
     }
 
     @Override
-    public int getMax() {
+    public int getMaxIndex() {
         int maxIndex = 0;
         double max = Double.MIN_VALUE;
 

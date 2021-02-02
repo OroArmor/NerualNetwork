@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 import com.oroarmor.neural_network.matrix.function.MatrixFunction;
+import com.oroarmor.neural_network.util.SerializationIndexer;
 
 /**
  * An abstract implementation for all Layers
@@ -12,7 +13,7 @@ import com.oroarmor.neural_network.matrix.function.MatrixFunction;
  * @author OroArmor
  */
 public abstract class Layer<T extends Matrix<T>> implements Serializable {
-    private static final long serialVersionUID = 10L;
+    private static final long serialVersionUID = SerializationIndexer.LAYER_ID_HEADER;
 
     /**
      * The output neurons

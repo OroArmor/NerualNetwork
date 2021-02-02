@@ -10,7 +10,6 @@ import com.oroarmor.neural_network.training.models.TotalError;
 import processing.core.PApplet;
 
 public class TwoByTwoID extends PApplet {
-    DisposeHandler dh;
     NeuralNetwork<CPUMatrix> twobytwonn;
     CPUMatrix[] inputs;
     CPUMatrix[] outputs;
@@ -38,7 +37,6 @@ public class TwoByTwoID extends PApplet {
     }
 
     void drawInputs(CPUMatrix inputs, int x, int y, int w, int h, int oIndex) {
-
         CPUMatrix outputs = twobytwonn.feedForward(inputs);
         pushMatrix();
         translate(x + w / 2f, y + h / 4f);
@@ -132,11 +130,11 @@ public class TwoByTwoID extends PApplet {
         outputs = new CPUMatrix[8];
         for (int i = 0; i < sols.length; i++) {
             inputs[i] = new CPUMatrix(ins[i][0], 4, 1);
-            outputs[i] = new CPUMatrix(sols[i], sols[i].length, 1);
+            outputs[i] = new CPUMatrix(sols[i], 4, 1);
         }
 
         twobytwonn = NetworkSaver.loadNetworkFromFile(System.getProperty("user.dir") + "/run/2x2/",
-                "twoXtwonn.nn");
+                "twoXtwonn.nn", NeuralNetwork.class);
 
         if (twobytwonn == null || reset) {
             twobytwonn = new NeuralNetwork<>(4);
@@ -145,31 +143,11 @@ public class TwoByTwoID extends PApplet {
             twobytwonn.addLayer(new KeepPositiveLayer<>(8, MatrixType.CPU));
             twobytwonn.addLayer(new FeedForwardLayer<>(4, MatrixType.CPU));
         }
-        System.out.println("Feed Foward");
+        System.out.println("Feed Forward");
         for (CPUMatrix input : inputs) {
             twobytwonn.feedForward(input);
         }
 //		noStroke();
         textAlign(CENTER, CENTER);
-
-        dh = new DisposeHandler();
-        registerMethod("dispose", dh);
-        dh.register(this);
-    }
-
-    public class DisposeHandler {
-        public DisposeHandler() {
-        }
-
-        public void dispose() {
-            NetworkSaver.saveNetworkToFile(twobytwonn, System.getProperty("user.dir") + "/run/2x2/", "twoXtwonn.nn"
-            );
-            System.out.println("Network Saved");
-
-        }
-
-        public void register(PApplet p) {
-            p.registerMethod("dispose", this);
-        }
     }
 }

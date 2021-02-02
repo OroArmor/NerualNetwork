@@ -6,6 +6,7 @@ import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 import com.oroarmor.neural_network.matrix.function.KeepPositiveFunction;
 import com.oroarmor.neural_network.matrix.function.MatrixFunction;
+import com.oroarmor.neural_network.util.SerializationIndexer;
 
 /**
  * A Keep positive layer. All values less than 0 are converted to 0 by {@link KeepPositiveFunction}
@@ -13,7 +14,7 @@ import com.oroarmor.neural_network.matrix.function.MatrixFunction;
  * @author OroArmor
  */
 public class KeepPositiveLayer<T extends Matrix<T>> extends Layer<T> {
-    private static final long serialVersionUID = 11L;
+    private static final long serialVersionUID = SerializationIndexer.KEEP_POSITIVE_LAYER_ID;
 
     /**
      * A dud field to prevent NPE
@@ -31,7 +32,7 @@ public class KeepPositiveLayer<T extends Matrix<T>> extends Layer<T> {
 
     @Override
     public T feedForward(T inputs) {
-        return inputs.applyFunction(new KeepPositiveFunction());
+        return weights.multiplyMatrix(inputs).applyFunction(new KeepPositiveFunction());
     }
 
     @Override
@@ -46,7 +47,7 @@ public class KeepPositiveLayer<T extends Matrix<T>> extends Layer<T> {
 
     @Override
     public T getWeights() {
-        return null;
+        return weights;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class KeepPositiveLayer<T extends Matrix<T>> extends Layer<T> {
 
     @Override
     public void setup(int inputs) {
-        weights = new CPUMatrix(inputs, neurons).toMatrix(this.type);
+        weights = new CPUMatrix(neurons, inputs).toMatrix(this.type);
     }
 
     @Override

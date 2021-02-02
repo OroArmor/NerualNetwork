@@ -31,15 +31,21 @@ public class Tester<T extends Matrix<T>> implements Runnable {
     protected NeuralNetwork<T> network;
 
     /**
+     * The threshold to consider when a value is considered satisfactory
+     */
+    protected double threshold;
+
+    /**
      * Creates a new {@link Tester}
      * @param getInput The input provider
      * @param getOutput The output provider
      * @param network The network
      */
-    public Tester(DataProvider<T> getInput, DataProvider<T> getOutput, NeuralNetwork<T> network) {
+    public Tester(DataProvider<T> getInput, DataProvider<T> getOutput, NeuralNetwork<T> network, double threshold) {
         this.getInput = getInput;
         this.getOutput = getOutput;
         this.network = network;
+        this.threshold = threshold;
     }
 
     @Override
@@ -47,7 +53,9 @@ public class Tester<T extends Matrix<T>> implements Runnable {
         for (int i = 0; i < (Integer) getInput.globalArgs[1]; i++) {
             T input = getInput.getData(new Object[]{i});
             T output = getOutput.getData(new Object[]{i});
-            if (network.feedForward(input).getMax() == output.getMax()) {
+            T calculatedOutput = network.feedForward(input);
+            int maxIndex = calculatedOutput.getMaxIndex();
+            if (maxIndex == output.getMaxIndex() && calculatedOutput.getValue(maxIndex, 0) > threshold) {
                 addCorrect();
             }
         }

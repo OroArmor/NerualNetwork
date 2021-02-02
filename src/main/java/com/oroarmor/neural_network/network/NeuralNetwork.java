@@ -8,6 +8,7 @@ import com.oroarmor.neural_network.layer.Layer;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 import com.oroarmor.neural_network.training.models.TrainingModel;
+import com.oroarmor.neural_network.util.SerializationIndexer;
 
 /**
  * A neural network class
@@ -15,7 +16,7 @@ import com.oroarmor.neural_network.training.models.TrainingModel;
  * @author OroArmor
  */
 public class NeuralNetwork<T extends Matrix<T>> extends AbstractNetwork<T> implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = SerializationIndexer.NEURAL_NETWORK_ID;
 
     /**
      * Creates a new network with the given inputs

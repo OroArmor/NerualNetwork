@@ -13,6 +13,7 @@ import com.oroarmor.neural_network.matrix.jcuda.kernels.simpleMath.AddKernel;
 import com.oroarmor.neural_network.matrix.jcuda.kernels.simpleMath.AddValueKernel;
 import com.oroarmor.neural_network.matrix.jcuda.kernels.simpleMath.MultiplyKernel;
 import com.oroarmor.neural_network.matrix.jcuda.kernels.simpleMath.MultiplyValueKernel;
+import com.oroarmor.neural_network.util.SerializationIndexer;
 import jcuda.Pointer;
 import jcuda.Sizeof;
 import jcuda.driver.CUdeviceptr;
@@ -24,7 +25,7 @@ import static jcuda.driver.JCudaDriver.*;
  * @author OroArmor
  */
 public class JCudaMatrix implements Matrix<JCudaMatrix> {
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = SerializationIndexer.GPU_MATRIX_ID;
     /**
      * A map of the disposers to dispose extra gpu data to save on memory
      */
@@ -333,7 +334,7 @@ public class JCudaMatrix implements Matrix<JCudaMatrix> {
     }
 
     @Override
-    public int getMax() {
+    public int getMaxIndex() {
         return 0;
     }
 }

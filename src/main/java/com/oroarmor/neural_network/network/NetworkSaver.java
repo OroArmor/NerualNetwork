@@ -13,19 +13,19 @@ public class NetworkSaver {
      * Reads the neural network
      * @param filePath The path to the network file
      * @param fileName The network file
-     * @param <T> The matrix class
+     * @param <N> The {@link AbstractNetwork} class
      * @return The neural network
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Matrix<T>> NeuralNetwork<T> loadNetworkFromFile(String filePath, String fileName) {
+    public static <N extends AbstractNetwork<?>> N loadNetworkFromFile(String filePath, String fileName, Class<N> networkClass) {
         ObjectInputStream oos;
         FileInputStream fos;
-        NeuralNetwork<T> nn;
+        N nn;
 
         try {
             fos = new FileInputStream(filePath + fileName);
             oos = new ObjectInputStream(fos);
-            nn = (NeuralNetwork<T>) oos.readObject();
+            nn =  (N) oos.readObject();
             fos.close();
             oos.close();
         } catch (Exception e) {
@@ -41,7 +41,7 @@ public class NetworkSaver {
      * @param filePath The file path
      * @param fileName The file name
      */
-    public static void saveNetworkToFile(NeuralNetwork<?> network, String filePath, String fileName) {
+    public static void saveNetworkToFile(AbstractNetwork<?> network, String filePath, String fileName) {
         ObjectOutputStream oos;
         File networkFile;
         FileOutputStream fos;

@@ -7,6 +7,7 @@ import com.oroarmor.neural_network.layer.Layer;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 import com.oroarmor.neural_network.training.models.TrainingModel;
+import com.oroarmor.neural_network.util.SerializationIndexer;
 
 
 /**

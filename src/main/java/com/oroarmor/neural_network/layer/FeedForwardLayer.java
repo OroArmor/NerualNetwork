@@ -6,6 +6,7 @@ import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix;
 import com.oroarmor.neural_network.matrix.function.MatrixFunction;
 import com.oroarmor.neural_network.matrix.function.SigmoidMatrix;
+import com.oroarmor.neural_network.util.SerializationIndexer;
 
 /**
  * A Neural Network layer that feeds the inputs forward through a {@link SigmoidMatrix} function
@@ -13,7 +14,7 @@ import com.oroarmor.neural_network.matrix.function.SigmoidMatrix;
  * @author OroArmor
  */
 public class FeedForwardLayer<T extends Matrix<T>> extends Layer<T> {
-    private static final long serialVersionUID = 12L;
+    private static final long serialVersionUID = SerializationIndexer.FEED_FORWARD_LAYER_ID;
 
     /**
      * The previous neurons (inputs)
