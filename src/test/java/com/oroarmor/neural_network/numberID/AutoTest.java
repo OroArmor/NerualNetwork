@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 OroArmor
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.oroarmor.neural_network.numberID;
 
 import java.io.IOException;
@@ -19,7 +43,7 @@ public class AutoTest extends PApplet {
     AutoEncoder<CPUMatrix> encoder;
     boolean reset = true;
 
-    public static int numImages = 60000;
+    public static int numImages = 12000;
     public static CPUMatrix[] images = new CPUMatrix[numImages];
 
     public static void main(String[] args) {
@@ -57,14 +81,14 @@ public class AutoTest extends PApplet {
             encoder = new AutoEncoder<>(28 * 28, 2);
             encoder.addLayer(new FeedForwardLayer<>(128, Matrix.MatrixType.CPU));
             encoder.addLayer(new FeedForwardLayer<>(64, Matrix.MatrixType.CPU));
-            encoder.addLayer(new FeedForwardLayer<>(10, Matrix.MatrixType.CPU));
+            encoder.addLayer(new FeedForwardLayer<>(32, Matrix.MatrixType.CPU));
             encoder.addLayer(new FeedForwardLayer<>(64, Matrix.MatrixType.CPU));
             encoder.addLayer(new FeedForwardLayer<>(128, Matrix.MatrixType.CPU));
             encoder.addLayer(new FeedForwardLayer<>(28 * 28, Matrix.MatrixType.CPU));
         }
 
         int numThreads = 12;
-        int numRepeats = 0;
+        int numRepeats = 1;
 
         Thread[] threads = new Thread[numThreads];
 
@@ -81,7 +105,7 @@ public class AutoTest extends PApplet {
                         return images[image + threadIndex];
                     }
                 };
-                Trainer<CPUMatrix> trainer = new Trainer<>(getData, getData, encoder, new TotalError(0.01));
+                Trainer<CPUMatrix> trainer = new Trainer<>(getData, getData, encoder, new TotalError(10));
                 threads[thread] = new Thread(trainer);
             }
 
@@ -112,9 +136,9 @@ public class AutoTest extends PApplet {
         frameRate(1);
         background(0, 0, 0);
 
-        encoder.train(images[frameCount % numImages], images[frameCount % numImages], new TotalError(0.001));
+        encoder.train(images[frameCount % numImages], images[frameCount % numImages], new TotalError(0.1));
 
-        CPUMatrix test = Matrix.randomMatrix(Matrix.MatrixType.CPU, 10, 1, new Random(), 0, 1);
+        CPUMatrix test = Matrix.randomMatrix(Matrix.MatrixType.CPU, 32, 1, new Random(), -1, 1);
         assert test != null;
 //        test.applyFunction(new SoftMaxFunction());
 
