@@ -1,5 +1,7 @@
 plugins {
     id "java"
+    id "maven"
+    id "signing"
     id "maven-publish"
     id 'com.jfrog.bintray' version "1.8.4"
     id 'org.cadixdev.licenser' version '0.5.0'
@@ -77,7 +79,7 @@ def addJCudaDependecies(List<String> deps) {
             compile(group: 'org.jcuda', name: it, version: project.jcuda_version) {
                 transitive = false
             }
-            compileOnly group: 'org.jcuda', name: "${it}-natives", classifier: classifier, version:  project.jcuda_version
+            compileOnly group: 'org.jcuda', name: "${it}-natives", classifier: classifier, version: project.jcuda_version
         }
     }
 }
@@ -88,21 +90,27 @@ dependencies {
     addJCudaDependecies(["jcuda", "jcurand"])
 }
 
-task testJar(type: Jar) {
+task examplesJar(type: Jar) {
+    classifier "examples"
     dependsOn(jar)
     from sourceSets.test.compileClasspath
-    classifier "test"
+}
+
+task examplesSourceJar(type: Jar) {
+    classifier "examples-sources"
+    dependsOn(jar)
+    from sourceSets.test.allSource
 }
 
 task runJCuda(type: JavaExec) {
-    dependsOn(testJar)
-    classpath =  sourceSets.test.runtimeClasspath
+    dependsOn(examplesJar)
+    classpath = sourceSets.test.runtimeClasspath
     mainClass = "com.oroarmor.neural_network.numberID.NumberIDJCuda"
 }
 
 task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
     classifier "sources"
+    from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -110,19 +118,77 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifact jar
-            artifact sourceJar
-            artifact javadocJar
+artifacts {
+    archives jar, sourceJar, javadocJar, examplesJar, examplesSourceJar
+}
 
-            groupId = project.maven_group
-            artifactId = project.archives_base_name
-            version = project.version
+signing {
+    sign configurations.archives
+}
+
+group = project.maven_group
+archivesBaseName = project.archives_base_name
+version = project.version
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            def ossrhUsername = "OroArmor"
+            def ossrhPassword = project.hasProperty("ossrhPassword") ? project.property("ossrhPassword") : System.getenv("OSSRH_PASSWORD")
+
+            beforeDeployment {
+                MavenDeployment deployment -> signing.signPom(deployment)
+            }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+            pom.project {
+                name 'Neural Network Library'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'A simple Java Neural Network Library'
+                url 'http://github.com/OroArmor/NeuralNetwork'
+
+                scm {
+                    connection 'scm:git:git://github.com/OroArmor/NeuralNetwork.git'
+                    developerConnection 'scm:git:ssh://github.com:OroArmor/NeuralNetwork.git'
+                    url 'http://github.com/OroArmor/NeuralNetwork'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'https://mit-license.org/'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'OroArmor'
+                        name 'Eli Orona'
+                        email 'eliorona@live.com'
+                        url "oroarmor.com"
+                    }
+                }
+            }
         }
     }
 }
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+
+        }
+    }
+}
+
 
 bintray {
     user = System.getenv('BINTRAY_USER')

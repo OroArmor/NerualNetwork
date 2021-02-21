@@ -29,7 +29,6 @@ import java.io.FileInputStream;
 import java.text.DecimalFormat;
 
 import com.oroarmor.neural_network.layer.FeedForwardLayer;
-import com.oroarmor.neural_network.layer.SoftMaxLayer;
 import com.oroarmor.neural_network.matrix.CPUMatrix;
 import com.oroarmor.neural_network.matrix.Matrix.MatrixType;
 import com.oroarmor.neural_network.matrix.function.SoftMaxFunction;
@@ -49,10 +48,6 @@ public class NumberIDNeuralNetwork extends PApplet {
 
     public static void main(String[] args) {
         PApplet.main("com.oroarmor.neural_network.numberID.NumberIDNeuralNetwork");
-    }
-
-    public CPUMatrix getImageData(String string) {
-        return getImageData(loadImage(string));
     }
 
     public CPUMatrix getImageData(PImage image) {
