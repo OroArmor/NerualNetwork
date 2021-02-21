@@ -3,7 +3,6 @@ plugins {
     id "maven"
     id "signing"
     id "maven-publish"
-    id 'com.jfrog.bintray' version "1.8.4"
     id 'org.cadixdev.licenser' version '0.5.0'
 }
 
@@ -177,33 +176,6 @@ uploadArchives {
                     }
                 }
             }
-        }
-    }
-}
-
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-
-        }
-    }
-}
-
-
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ["maven"]
-    publish = true
-    pkg {
-        repo = 'oroarmor'
-        name = project.archives_base_name
-        userOrg = "oroarmor"
-        licenses = ['CC0-1.0']
-        vcsUrl = 'https://github.com/OroArmor/NeuralNetwork.git'
-        version {
-            name = project.version
         }
     }
 }

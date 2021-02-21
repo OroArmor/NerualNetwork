@@ -18,13 +18,6 @@ jobs:
           java-version: 1.11
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with gradle
-        run: ./gradlew build
-      - name: Upload to Bintray
-        run: ./gradlew bintrayUpload --parallel --stacktrace
-        env:
-          BINTRAY_USER: oroarmor
-          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
       - name: Deploy
         run: .build/deploy.sh
         env:
